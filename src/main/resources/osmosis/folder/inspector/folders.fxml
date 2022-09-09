@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<BorderPane xmlns="https://javafx.com/javafx"
+            xmlns:fx="https://javafx.com/fxml"
+            fx:controller="osmosis.folder.inspector.controllers.FoldersController"
+            prefHeight="400.0" prefWidth="600.0">
+    <top>
+        <HBox alignment="CENTER">
+            <padding>
+                <Insets left="10"
+                        top="15"
+                        right="10"
+                        bottom="10"/>
+            </padding>
+            <TextField fx:id="addressBar"
+                       HBox.hgrow="ALWAYS"
+                       disable="true"
+                       focusTraversable="false"/>
+        </HBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true"
+                    style="-fx-focus-color: transparent;">
+            <VBox fx:id="foldersVBox"
+                  spacing="2"/>
+            <padding>
+                <Insets top="5"
+                        bottom="5"/>
+            </padding>
+        </ScrollPane>
+    </center>
+    <bottom>
+        <BorderPane>
+            <left>
+                <HBox alignment="BOTTOM_LEFT">
+                    <Button fx:id="backButton"
+                            onAction="#goBack"
+                            focusTraversable="false"
+                            text="Back">
+                        <HBox.margin>
+                            <Insets>
+                                <top>5</top>
+                                <left>5</left>
+                                <bottom>5</bottom>
+                            </Insets>
+                        </HBox.margin>
+                    </Button>
+                </HBox>
+            </left>
+            <right>
+                <HBox alignment="BOTTOM_RIGHT">
+                    <ProgressIndicator fx:id="progressIndicator"
+                                       prefWidth="20"
+                                       prefHeight="20">
+                        <HBox.margin>
+                            <Insets>
+                                <top>5</top>
+                                <left>5</left>
+                                <bottom>5</bottom>
+                                <right>5</right>
+                            </Insets>
+                        </HBox.margin>
+                    </ProgressIndicator>
+                    <Text fx:id="progressText">
+                        <HBox.margin>
+                            <Insets>
+                                <top>5</top>
+                                <left>5</left>
+                                <bottom>5</bottom>
+                                <right>5</right>
+                            </Insets>
+                        </HBox.margin>
+                    </Text>
+                </HBox>
+            </right>
+        </BorderPane>
+    </bottom>
+</BorderPane>
