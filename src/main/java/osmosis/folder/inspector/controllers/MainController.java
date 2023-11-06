@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import osmosis.folder.inspector.file.File;
+import osmosis.folder.inspector.file.Container;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -31,7 +31,7 @@ public class MainController extends Controller {
             return;
         }
         Thread calculatorThread = new Thread(() -> {
-            File.setCurrentFile(new File(file, null));
+            Container.setCurrentFile(new Container(file, null));
             informationBox.setDisable(false);
             hideProgressIndicator();
             setScene(actionEvent, "folders.fxml");

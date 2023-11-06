@@ -1,18 +1,18 @@
 package osmosis.folder.inspector.file;
 
 public abstract class FileReadyListener {
-    private File file;
+    private Container container;
 
-    public FileReadyListener(File file) {
-        this.file = file;
+    public FileReadyListener(Container container) {
+        this.container = container;
     }
 
-    public File getFile() {
-        return file;
+    public Container getFile() {
+        return container;
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    public void setFile(Container container) {
+        this.container = container;
     }
 
     public abstract void onFileReady();

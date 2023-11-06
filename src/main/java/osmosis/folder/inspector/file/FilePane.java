@@ -15,19 +15,19 @@ public class FilePane extends BorderPane {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###");
     private static final Color ACCENT_COLOR = Color.color(190 / 256f, 211 / 256f, 231 / 256f);
     private static boolean previousIsDefault = true;
-    private final File file;
+    private final Container container;
 
-    public FilePane(File file) {
-        this.file = file;
+    public FilePane(Container container) {
+        this.container = container;
         setPadding(new Insets(0, 20, 0, 20));
         if (previousIsDefault) {
             setBackground(new Background(new BackgroundFill(ACCENT_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
         }
         previousIsDefault = !previousIsDefault;
 
-        setLeft(new Label(file.getName()));
-        if (file.isReady()) {
-            setRight(new Label(DECIMAL_FORMAT.format(file.getSize())));
+        setLeft(new Label(container.getName()));
+        if (container.isReady()) {
+            setRight(new Label(DECIMAL_FORMAT.format(container.getSize())));
         } else {
             ProgressIndicator progressIndicator = new ProgressIndicator();
             progressIndicator.setMaxHeight(13);
@@ -36,7 +36,7 @@ public class FilePane extends BorderPane {
         }
     }
 
-    public File getFile() {
-        return file;
+    public Container getFile() {
+        return container;
     }
 }

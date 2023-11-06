@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import osmosis.folder.inspector.file.File;
+import osmosis.folder.inspector.file.Container;
 import osmosis.folder.inspector.file.FilePane;
 import osmosis.folder.inspector.file.FileReadyListener;
 
@@ -30,21 +30,21 @@ public class FoldersController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        addressBar.setText(File.getCurrentFile().getPath());
-        File file = File.getCurrentFile();
-        fileReadyListener = new FileReadyListener(file) {
+        addressBar.setText(Container.getCurrentFile().getPath());
+        Container container = Container.getCurrentFile();
+        fileReadyListener = new FileReadyListener(container) {
             @Override
             public void onFileReady() {
                 Platform.runLater(() -> showFile(fileReadyListener.getFile()));
             }
         };
-        showFile(file);
+        showFile(container);
     }
 
     @FXML
     public void goBack(ActionEvent actionEvent) {
-        File parentFile = File.getCurrentFile().getParent();
-        if (parentFile == null) {
+        Container parentContainer = Container.getCurrentFile().getParent();
+        if (parentContainer == null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                     "Would you like to go back to the main menu?",
                     ButtonType.YES, ButtonType.CANCEL);
@@ -54,33 +54,33 @@ public class FoldersController extends Controller {
             }
             return;
         }
-        showFile(parentFile);
+        showFile(parentContainer);
     }
 
-    private void showFile(File file) {
+    private void showFile(Container container) {
         addressBar.requestFocus();
-        File.setCurrentFile(file);
-        if (file.getNumberOfChildren() == 0) {
+        Container.setCurrentFile(container);
+        if (container.getNumberOfChildren() == 0) {
             return;
         }
-        addressBar.setText(file.getPath());
-        fileReadyListener.setFile(file);
-        file.setFileReadyListener(this.fileReadyListener);
-        if (!file.isStarted()) {
-            Thread calculatorThread = new Thread(file::calculateDirectorySize);
+        addressBar.setText(container.getPath());
+        fileReadyListener.setFile(container);
+        container.setFileReadyListener(this.fileReadyListener);
+        if (!container.isStarted()) {
+            Thread calculatorThread = new Thread(container::calculateSize);
             calculatorThread.setDaemon(true);
             calculatorThread.start();
         }
         foldersVBox.getChildren().clear();
-        List<File> files = new ArrayList<>(file.getChildren());
+        List<Container> containers = new ArrayList<>(container.getChildren());
         int ready = 0;
-        for (File child : files) {
+        for (Container child : containers) {
             addFilePane(child);
             if (child.isReady()) {
                 ready++;
             }
         }
-        updateProgress(ready, file.getNumberOfChildren());
+        updateProgress(ready, container.getNumberOfChildren());
     }
 
     private void updateProgress(int completed, int all) {
@@ -90,8 +90,8 @@ public class FoldersController extends Controller {
         progressText.setText(completed + "/" + all);
     }
 
-    private void addFilePane(File file) {
-        FilePane filePane = new FilePane(file);
+    private void addFilePane(Container container) {
+        FilePane filePane = new FilePane(container);
         filePane.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> showFile(filePane.getFile()));
         foldersVBox.getChildren().add(filePane);
     }

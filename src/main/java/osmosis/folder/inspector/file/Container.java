@@ -1,25 +1,30 @@
 package osmosis.folder.inspector.file;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class File {
-    private static File currentFile;
-    private final File parent;
-    private final java.io.File fileObject;
-    private final List<File> children;
+public class Container {
+    private static Container currentContainer;
+    private final Container parent;
+    private final java.io.File file;
+    private final List<Container> children;
     private final java.io.File[] childrenFileObjects;
     private FileReadyListener fileReadyListener;
     private boolean started;
     private long size;
     private boolean ready;
 
-    public File(java.io.File fileObject, File parent) {
+    public Container(File file) {
+        this(file, null);
+    }
+
+    public Container(File file, Container parent) {
         this.parent = parent;
-        this.fileObject = fileObject;
-        this.childrenFileObjects = fileObject.listFiles();
+        this.file = file;
+        this.childrenFileObjects = file.listFiles();
         this.children = new ArrayList<>();
         this.fileReadyListener = null;
         this.started = false;
@@ -27,33 +32,33 @@ public class File {
         this.size = -1;
     }
 
-    public void calculateDirectorySize() {
+    public void calculateSize() {
         started = true;
         size = 0;
-        if (fileObject.isDirectory()) {
+        if (file.isDirectory()) {
             if (childrenFileObjects != null) {
                 for (java.io.File child : childrenFileObjects) {
-                    children.add(new File(child, this));
+                    children.add(new Container(child, this));
                 }
             }
-            for (File directory : new ArrayList<>(children)) {
-                directory.calculateDirectorySize();
+            for (Container directory : new ArrayList<>(children)) {
+                directory.calculateSize();
                 size += directory.getSize();
-                children.sort(Comparator.comparingLong(File::getSize));
+                children.sort(Comparator.comparingLong(Container::getSize));
                 Collections.reverse(children);
                 invokeListener();
             }
         } else {
-            size = fileObject.length();
+            size = file.length();
         }
         ready = true;
     }
 
     public String getPath() {
-        return fileObject.getAbsolutePath();
+        return file.getAbsolutePath();
     }
 
-    public File getParent() {
+    public Container getParent() {
         return parent;
     }
 
@@ -61,12 +66,12 @@ public class File {
         return size;
     }
 
-    public List<File> getChildren() {
+    public List<Container> getChildren() {
         return children;
     }
 
     public String getName() {
-        return fileObject.getName();
+        return file.getName();
     }
 
     public void setFileReadyListener(FileReadyListener fileReadyListener) {
@@ -91,11 +96,11 @@ public class File {
         return childrenFileObjects != null ? childrenFileObjects.length : 0;
     }
 
-    public static File getCurrentFile() {
-        return currentFile;
+    public static Container getCurrentFile() {
+        return currentContainer;
     }
 
-    public static void setCurrentFile(File currentFile) {
-        File.currentFile = currentFile;
+    public static void setCurrentFile(Container currentContainer) {
+        Container.currentContainer = currentContainer;
     }
 }
