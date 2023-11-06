@@ -1,4 +1,4 @@
-package osmosis.folder.inspector.file;
+package osmosis.folder.inspector.container;
 
 import org.junit.jupiter.api.Test;
 

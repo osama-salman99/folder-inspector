@@ -1,4 +1,4 @@
-package osmosis.folder.inspector.file;
+package osmosis.folder.inspector.container;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class Container {
     private final java.io.File file;
     private final List<Container> children;
     private final java.io.File[] childrenFileObjects;
-    private FileReadyListener fileReadyListener;
+    private ContainerReadyListener containerReadyListener;
     private boolean started;
     private long size;
     private boolean ready;
@@ -26,7 +26,7 @@ public class Container {
         this.file = file;
         this.childrenFileObjects = file.listFiles();
         this.children = new ArrayList<>();
-        this.fileReadyListener = null;
+        this.containerReadyListener = null;
         this.started = false;
         this.ready = false;
         this.size = -1;
@@ -74,13 +74,13 @@ public class Container {
         return file.getName();
     }
 
-    public void setFileReadyListener(FileReadyListener fileReadyListener) {
-        this.fileReadyListener = fileReadyListener;
+    public void setFileReadyListener(ContainerReadyListener containerReadyListener) {
+        this.containerReadyListener = containerReadyListener;
     }
 
     public void invokeListener() {
-        if (fileReadyListener != null) {
-            fileReadyListener.onFileReady();
+        if (containerReadyListener != null) {
+            containerReadyListener.onContainerReady();
         }
     }
 

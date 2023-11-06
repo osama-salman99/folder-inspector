@@ -1,4 +1,4 @@
-package osmosis.folder.inspector.file;
+package osmosis.folder.inspector.container;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -11,13 +11,13 @@ import javafx.scene.paint.Color;
 
 import java.text.DecimalFormat;
 
-public class FilePane extends BorderPane {
+public class ContainerPane extends BorderPane {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###");
     private static final Color ACCENT_COLOR = Color.color(190 / 256f, 211 / 256f, 231 / 256f);
     private static boolean previousIsDefault = true;
     private final Container container;
 
-    public FilePane(Container container) {
+    public ContainerPane(Container container) {
         this.container = container;
         setPadding(new Insets(0, 20, 0, 20));
         if (previousIsDefault) {

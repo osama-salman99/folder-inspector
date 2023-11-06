@@ -11,9 +11,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import osmosis.folder.inspector.file.Container;
-import osmosis.folder.inspector.file.FilePane;
-import osmosis.folder.inspector.file.FileReadyListener;
+import osmosis.folder.inspector.container.Container;
+import osmosis.folder.inspector.container.ContainerPane;
+import osmosis.folder.inspector.container.ContainerReadyListener;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,16 +26,16 @@ public class FoldersController extends Controller {
     public Button backButton;
     public Text progressText;
     public VBox foldersVBox;
-    private FileReadyListener fileReadyListener;
+    private ContainerReadyListener containerReadyListener;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         addressBar.setText(Container.getCurrentFile().getPath());
         Container container = Container.getCurrentFile();
-        fileReadyListener = new FileReadyListener(container) {
+        containerReadyListener = new ContainerReadyListener(container) {
             @Override
-            public void onFileReady() {
-                Platform.runLater(() -> showFile(fileReadyListener.getFile()));
+            public void onContainerReady() {
+                Platform.runLater(() -> showFile(containerReadyListener.getContainer()));
             }
         };
         showFile(container);
@@ -64,8 +64,8 @@ public class FoldersController extends Controller {
             return;
         }
         addressBar.setText(container.getPath());
-        fileReadyListener.setFile(container);
-        container.setFileReadyListener(this.fileReadyListener);
+        containerReadyListener.setContainer(container);
+        container.setFileReadyListener(this.containerReadyListener);
         if (!container.isStarted()) {
             Thread calculatorThread = new Thread(container::calculateSize);
             calculatorThread.setDaemon(true);
@@ -91,8 +91,8 @@ public class FoldersController extends Controller {
     }
 
     private void addFilePane(Container container) {
-        FilePane filePane = new FilePane(container);
-        filePane.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> showFile(filePane.getFile()));
-        foldersVBox.getChildren().add(filePane);
+        ContainerPane containerPane = new ContainerPane(container);
+        containerPane.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> showFile(containerPane.getFile()));
+        foldersVBox.getChildren().add(containerPane);
     }
 }
