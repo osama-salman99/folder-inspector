@@ -4,12 +4,12 @@ import java.io.File;
 import java.util.List;
 
 public abstract class Container {
-    protected final Container parent;
-    protected final File file;
-    protected ContainerReadyListener containerReadyListener;
-    protected boolean started;
     protected long size;
     protected boolean ready;
+    protected boolean started;
+    protected final File file;
+    protected final Container parent;
+    protected ContainerReadyListener containerReadyListener;
 
     public Container(File file, Container parent) {
         this.parent = parent;
@@ -17,7 +17,7 @@ public abstract class Container {
         this.containerReadyListener = null;
         this.started = false;
         this.ready = false;
-        this.size = -1;
+        this.size = Long.MAX_VALUE;
     }
 
     public abstract List<Container> getChildren();
