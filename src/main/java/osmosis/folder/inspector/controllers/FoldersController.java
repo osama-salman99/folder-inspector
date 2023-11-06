@@ -45,9 +45,12 @@ public class FoldersController extends Controller {
     public void goBack(ActionEvent actionEvent) {
         Container parentContainer = Container.getCurrentContainer().getParent();
         if (parentContainer == null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+            Alert alert = new Alert(
+                    Alert.AlertType.CONFIRMATION,
                     "Would you like to go back to the main menu?",
-                    ButtonType.YES, ButtonType.CANCEL);
+                    ButtonType.YES,
+                    ButtonType.CANCEL
+            );
             alert.showAndWait();
             if (alert.getResult() == ButtonType.YES) {
                 setScene(actionEvent, "main.fxml");
