@@ -30,20 +30,20 @@ public class FoldersController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        addressBar.setText(Container.getCurrentFile().getPath());
-        Container container = Container.getCurrentFile();
+        addressBar.setText(Container.getCurrentContainer().getPath());
+        Container container = Container.getCurrentContainer();
         containerReadyListener = new ContainerReadyListener(container) {
             @Override
             public void onContainerReady() {
-                Platform.runLater(() -> showFile(containerReadyListener.getContainer()));
+                Platform.runLater(() -> showContainer(containerReadyListener.getContainer()));
             }
         };
-        showFile(container);
+        showContainer(container);
     }
 
     @FXML
     public void goBack(ActionEvent actionEvent) {
-        Container parentContainer = Container.getCurrentFile().getParent();
+        Container parentContainer = Container.getCurrentContainer().getParent();
         if (parentContainer == null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                     "Would you like to go back to the main menu?",
@@ -54,18 +54,18 @@ public class FoldersController extends Controller {
             }
             return;
         }
-        showFile(parentContainer);
+        showContainer(parentContainer);
     }
 
-    private void showFile(Container container) {
+    private void showContainer(Container container) {
         addressBar.requestFocus();
-        Container.setCurrentFile(container);
+        Container.setCurrentContainer(container);
         if (container.getNumberOfChildren() == 0) {
             return;
         }
         addressBar.setText(container.getPath());
         containerReadyListener.setContainer(container);
-        container.setFileReadyListener(this.containerReadyListener);
+        container.setContainerReadyListener(this.containerReadyListener);
         if (!container.isStarted()) {
             Thread calculatorThread = new Thread(container::calculateSize);
             calculatorThread.setDaemon(true);
@@ -75,7 +75,7 @@ public class FoldersController extends Controller {
         List<Container> containers = new ArrayList<>(container.getChildren());
         int ready = 0;
         for (Container child : containers) {
-            addFilePane(child);
+            addContainerPane(child);
             if (child.isReady()) {
                 ready++;
             }
@@ -90,9 +90,9 @@ public class FoldersController extends Controller {
         progressText.setText(completed + "/" + all);
     }
 
-    private void addFilePane(Container container) {
+    private void addContainerPane(Container container) {
         ContainerPane containerPane = new ContainerPane(container);
-        containerPane.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> showFile(containerPane.getFile()));
+        containerPane.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> showContainer(containerPane.getContainer()));
         foldersVBox.getChildren().add(containerPane);
     }
 }

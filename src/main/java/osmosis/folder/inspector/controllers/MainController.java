@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import osmosis.folder.inspector.container.Container;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -23,7 +24,7 @@ public class MainController extends Controller {
         if (path.endsWith(":")) {
             path += "\\";
         }
-        java.io.File file = new java.io.File(path);
+        File file = new File(path);
         if (!file.exists()) {
             showErrorAlert("Path is not valid");
             informationBox.setDisable(false);
@@ -31,7 +32,7 @@ public class MainController extends Controller {
             return;
         }
         Thread calculatorThread = new Thread(() -> {
-            Container.setCurrentFile(new Container(file, null));
+            Container.setCurrentContainer(new Container(file));
             informationBox.setDisable(false);
             hideProgressIndicator();
             setScene(actionEvent, "folders.fxml");

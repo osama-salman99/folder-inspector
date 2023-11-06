@@ -36,7 +36,7 @@ public class ContainerPane extends BorderPane {
         }
     }
 
-    public Container getFile() {
+    public Container getContainer() {
         return container;
     }
 }

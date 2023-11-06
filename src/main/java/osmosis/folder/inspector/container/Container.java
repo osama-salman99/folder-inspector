@@ -9,9 +9,9 @@ import java.util.List;
 public class Container {
     private static Container currentContainer;
     private final Container parent;
-    private final java.io.File file;
+    private final File file;
     private final List<Container> children;
-    private final java.io.File[] childrenFileObjects;
+    private final File[] childrenFiles;
     private ContainerReadyListener containerReadyListener;
     private boolean started;
     private long size;
@@ -24,7 +24,7 @@ public class Container {
     public Container(File file, Container parent) {
         this.parent = parent;
         this.file = file;
-        this.childrenFileObjects = file.listFiles();
+        this.childrenFiles = file.listFiles();
         this.children = new ArrayList<>();
         this.containerReadyListener = null;
         this.started = false;
@@ -36,8 +36,8 @@ public class Container {
         started = true;
         size = 0;
         if (file.isDirectory()) {
-            if (childrenFileObjects != null) {
-                for (java.io.File child : childrenFileObjects) {
+            if (childrenFiles != null) {
+                for (File child : childrenFiles) {
                     children.add(new Container(child, this));
                 }
             }
@@ -74,7 +74,7 @@ public class Container {
         return file.getName();
     }
 
-    public void setFileReadyListener(ContainerReadyListener containerReadyListener) {
+    public void setContainerReadyListener(ContainerReadyListener containerReadyListener) {
         this.containerReadyListener = containerReadyListener;
     }
 
@@ -93,14 +93,14 @@ public class Container {
     }
 
     public int getNumberOfChildren() {
-        return childrenFileObjects != null ? childrenFileObjects.length : 0;
+        return childrenFiles != null ? childrenFiles.length : 0;
     }
 
-    public static Container getCurrentFile() {
+    public static Container getCurrentContainer() {
         return currentContainer;
     }
 
-    public static void setCurrentFile(Container currentContainer) {
+    public static void setCurrentContainer(Container currentContainer) {
         Container.currentContainer = currentContainer;
     }
 }
