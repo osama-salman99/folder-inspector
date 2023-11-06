@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import osmosis.folder.inspector.container.Container;
+import osmosis.folder.inspector.container.ContainerManager;
 import osmosis.folder.inspector.container.ContainerPane;
 import osmosis.folder.inspector.container.ContainerReadyListener;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class FoldersController extends Controller {
+    private static final ContainerManager containerManager = ContainerManager.getInstance();
     public ProgressIndicator progressIndicator;
     public TextField addressBar;
     public Button backButton;
@@ -30,8 +32,8 @@ public class FoldersController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        addressBar.setText(Container.getCurrentContainer().getPath());
-        Container container = Container.getCurrentContainer();
+        addressBar.setText(containerManager.getCurrentContainer().getPath());
+        Container container = containerManager.getCurrentContainer();
         containerReadyListener = new ContainerReadyListener(container) {
             @Override
             public void onContainerReady() {
@@ -43,7 +45,7 @@ public class FoldersController extends Controller {
 
     @FXML
     public void goBack(ActionEvent actionEvent) {
-        Container parentContainer = Container.getCurrentContainer().getParent();
+        Container parentContainer = containerManager.getCurrentContainer().getParent();
         if (parentContainer == null) {
             Alert alert = new Alert(
                     Alert.AlertType.CONFIRMATION,
@@ -62,7 +64,7 @@ public class FoldersController extends Controller {
 
     private void showContainer(Container container) {
         addressBar.requestFocus();
-        Container.setCurrentContainer(container);
+        containerManager.setCurrentContainer(container);
         if (container.getNumberOfChildren() == 0) {
             return;
         }

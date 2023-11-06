@@ -7,12 +7,14 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import osmosis.folder.inspector.container.Container;
+import osmosis.folder.inspector.container.ContainerManager;
 
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainController extends Controller {
+    private static final ContainerManager containerManager = ContainerManager.getInstance();
     public TextField pathInputField;
     public VBox informationBox;
     public ProgressIndicator progressIndicator;
@@ -32,7 +34,7 @@ public class MainController extends Controller {
             return;
         }
         Thread calculatorThread = new Thread(() -> {
-            Container.setCurrentContainer(new Container(file));
+            containerManager.setCurrentContainer(new Container(file));
             informationBox.setDisable(false);
             hideProgressIndicator();
             setScene(actionEvent, "folders.fxml");

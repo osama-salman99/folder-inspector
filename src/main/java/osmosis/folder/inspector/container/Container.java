@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Container {
-    private static Container currentContainer;
     private final Container parent;
     private final File file;
     private final List<Container> children;
@@ -94,13 +93,5 @@ public class Container {
 
     public int getNumberOfChildren() {
         return childrenFiles != null ? childrenFiles.length : 0;
-    }
-
-    public static Container getCurrentContainer() {
-        return currentContainer;
-    }
-
-    public static void setCurrentContainer(Container currentContainer) {
-        Container.currentContainer = currentContainer;
     }
 }
