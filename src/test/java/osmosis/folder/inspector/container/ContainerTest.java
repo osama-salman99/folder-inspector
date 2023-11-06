@@ -12,7 +12,7 @@ class ContainerTest {
     @Test
     public void calculatesSizeOfFile() {
         File file = getFile("folder1/f1-file1.txt");
-        Container container = new Container(file);
+        Container container = ContainerFactory.createContainer(file);
         container.calculateSize();
         long size = container.getSize();
 
@@ -22,7 +22,7 @@ class ContainerTest {
     @Test
     public void calculatesSizeOfDirectory() {
         File file = getFile("folder1");
-        Container container = new Container(file);
+        Container container = ContainerFactory.createContainer(file);
         container.calculateSize();
         long size = container.getSize();
 
