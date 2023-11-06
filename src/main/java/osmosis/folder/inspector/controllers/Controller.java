@@ -13,28 +13,28 @@ import java.util.Objects;
 
 public abstract class Controller implements Initializable {
 
-	protected static Stage getStage(ActionEvent actionEvent) {
-		return (Stage) (((Node) actionEvent.getSource()).getScene().getWindow());
-	}
+    protected void setScene(ActionEvent actionEvent, String resourceName) {
+        setScene(getStage(actionEvent), resourceName);
+    }
 
-	protected static void showErrorAlert(String message) {
-		Alert alert = new Alert(Alert.AlertType.ERROR, message);
-		alert.showAndWait();
-	}
+    protected void setScene(Stage stage, String resourceName) {
+        Platform.runLater(() -> {
+            try {
+                stage.setScene(new Scene(FXMLLoader
+                        .load(Objects.requireNonNull(getClass().getResource("/osmosis/folder/inspector/" + resourceName)))));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                showErrorAlert("Error occurred: " + exception.getMessage());
+            }
+        });
+    }
 
-	protected void setScene(ActionEvent actionEvent, String resourceName) {
-		setScene(getStage(actionEvent), resourceName);
-	}
+    protected static Stage getStage(ActionEvent actionEvent) {
+        return (Stage) (((Node) actionEvent.getSource()).getScene().getWindow());
+    }
 
-	protected void setScene(Stage stage, String resourceName) {
-		Platform.runLater(() -> {
-			try {
-				stage.setScene(new Scene(FXMLLoader
-						.load(Objects.requireNonNull(getClass().getResource("/osmosis/folder/inspector/" + resourceName)))));
-			} catch (Exception exception) {
-				exception.printStackTrace();
-				showErrorAlert("Error occurred: " + exception.getMessage());
-			}
-		});
-	}
+    protected static void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+        alert.showAndWait();
+    }
 }
