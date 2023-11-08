@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class FileContainer extends Container {
-    public FileContainer(File file, Container parent) {
+    public FileContainer(File file, DirectoryContainer parent) {
         super(file, parent);
     }
 

@@ -2,16 +2,17 @@ package osmosis.folder.inspector.container;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class Container {
+    protected final File file;
+    protected final DirectoryContainer parent;
     protected long size;
     protected boolean ready;
     protected boolean started;
-    protected final File file;
-    protected final Container parent;
     protected ContainerReadyListener containerReadyListener;
 
-    public Container(File file, Container parent) {
+    public Container(File file, DirectoryContainer parent) {
         this.parent = parent;
         this.file = file;
         this.containerReadyListener = null;
@@ -36,7 +37,7 @@ public abstract class Container {
         return file.getAbsolutePath();
     }
 
-    public Container getParent() {
+    public DirectoryContainer getParent() {
         return parent;
     }
 
@@ -53,7 +54,7 @@ public abstract class Container {
     }
 
     public void invokeListener() {
-        if (containerReadyListener != null) {
+        if (Objects.nonNull(containerReadyListener)) {
             containerReadyListener.onContainerReady();
         }
     }
@@ -64,5 +65,9 @@ public abstract class Container {
 
     public boolean isReady() {
         return ready;
+    }
+
+    public boolean hasParentContainer() {
+        return Objects.nonNull(parent);
     }
 }

@@ -12,6 +12,10 @@ public class ContainerManager {
         this.currentContainer = currentContainer;
     }
 
+    public void clearContainer() {
+        this.currentContainer = null;
+    }
+
     public static ContainerManager getInstance() {
         return INSTANCE;
     }

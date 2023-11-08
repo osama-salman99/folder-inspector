@@ -44,21 +44,25 @@ public class FoldersController extends Controller {
 
     @FXML
     public void goBack(ActionEvent actionEvent) {
-        Container parentContainer = containerManager.getCurrentContainer().getParent();
-        if (parentContainer == null) {
-            Alert alert = new Alert(
-                    Alert.AlertType.CONFIRMATION,
-                    "Would you like to go back to the main menu?",
-                    ButtonType.YES,
-                    ButtonType.CANCEL
-            );
-            alert.showAndWait();
-            if (alert.getResult() == ButtonType.YES) {
-                setScene(actionEvent, "main.fxml");
-            }
+        if (containerManager.getCurrentContainer().hasParentContainer()) {
+            showContainer(containerManager.getCurrentContainer().getParent());
             return;
         }
-        showContainer(parentContainer);
+        goToMainMenu(actionEvent);
+    }
+
+    private void goToMainMenu(ActionEvent actionEvent) {
+        Alert alert = new Alert(
+                Alert.AlertType.CONFIRMATION,
+                "Would you like to go back to the main menu?",
+                ButtonType.YES,
+                ButtonType.CANCEL
+        );
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            setScene(actionEvent, "main.fxml");
+            ContainerManager.getInstance().clearContainer();
+        }
     }
 
     private void showContainer(Container container) {
@@ -76,18 +80,15 @@ public class FoldersController extends Controller {
             calculatorThread.start();
         }
         foldersVBox.getChildren().clear();
-        List<Container> containers = List.copyOf(container.getChildren());
-        int ready = 0;
-        for (Container child : containers) {
-            addContainerPane(child);
-            if (child.isReady()) {
-                ready++;
-            }
-        }
+        long ready = List.copyOf(container.getChildren())
+                .stream()
+                .peek(this::addContainerPane)
+                .filter(Container::isReady)
+                .count();
         updateProgress(ready, container.getNumberOfChildren());
     }
 
-    private void updateProgress(int completed, int all) {
+    private void updateProgress(long completed, long all) {
         boolean visibility = completed != all;
         progressIndicator.setVisible(visibility);
         progressText.setVisible(visibility);

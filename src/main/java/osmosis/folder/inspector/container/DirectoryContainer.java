@@ -10,7 +10,7 @@ public class DirectoryContainer extends Container {
     private final List<Container> children;
     private final File[] childrenFiles;
 
-    public DirectoryContainer(File file, Container parent) {
+    public DirectoryContainer(File file, DirectoryContainer parent) {
         super(file, parent);
         this.childrenFiles = file.listFiles();
         this.children = new ArrayList<>();
