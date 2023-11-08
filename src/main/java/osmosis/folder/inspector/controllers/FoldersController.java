@@ -8,13 +8,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import osmosis.folder.inspector.container.Container;
 import osmosis.folder.inspector.container.ContainerManager;
-import osmosis.folder.inspector.container.ContainerPane;
 import osmosis.folder.inspector.container.ContainerReadyListener;
+import osmosis.folder.inspector.panes.ContainerPane;
 
 import java.net.URL;
 import java.util.List;
@@ -22,15 +23,16 @@ import java.util.ResourceBundle;
 
 public class FoldersController extends Controller {
     private static final ContainerManager containerManager = ContainerManager.getInstance();
-    public ProgressIndicator progressIndicator;
-    public TextField addressBar;
+    public VBox foldersVBox;
     public Button backButton;
     public Text progressText;
-    public VBox foldersVBox;
+    public TextField addressBar;
+    public ProgressIndicator progressIndicator;
     private ContainerReadyListener containerReadyListener;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Tooltip.install(progressText, new Tooltip("Items calculated"));
         addressBar.setText(containerManager.getCurrentContainer().getPath());
         Container container = containerManager.getCurrentContainer();
         containerReadyListener = new ContainerReadyListener(container) {

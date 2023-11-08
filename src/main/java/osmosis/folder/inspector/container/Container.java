@@ -1,5 +1,7 @@
 package osmosis.folder.inspector.container;
 
+import javafx.scene.image.Image;
+
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
@@ -18,12 +20,8 @@ public abstract class Container {
         this.containerReadyListener = null;
         this.started = false;
         this.ready = false;
-        this.size = Long.MAX_VALUE;
+        this.size = Long.MIN_VALUE;
     }
-
-    public abstract List<Container> getChildren();
-
-    public abstract void calculateSize();
 
     public int getNumberOfChildren() {
         return getChildren().size();
@@ -70,4 +68,10 @@ public abstract class Container {
     public boolean hasParentContainer() {
         return Objects.nonNull(parent);
     }
+
+    public abstract List<Container> getChildren();
+
+    public abstract void calculateSize();
+
+    public abstract Image getIcon();
 }
