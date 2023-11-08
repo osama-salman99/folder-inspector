@@ -17,7 +17,6 @@ import osmosis.folder.inspector.container.ContainerPane;
 import osmosis.folder.inspector.container.ContainerReadyListener;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -63,11 +62,11 @@ public class FoldersController extends Controller {
     }
 
     private void showContainer(Container container) {
-        addressBar.requestFocus();
-        containerManager.setCurrentContainer(container);
-        if (container.getNumberOfChildren() == 0) {
+        if (container.hasNoChildren()) {
             return;
         }
+        addressBar.requestFocus();
+        containerManager.setCurrentContainer(container);
         addressBar.setText(container.getPath());
         containerReadyListener.setContainer(container);
         container.setContainerReadyListener(this.containerReadyListener);
@@ -77,7 +76,7 @@ public class FoldersController extends Controller {
             calculatorThread.start();
         }
         foldersVBox.getChildren().clear();
-        List<Container> containers = new ArrayList<>(container.getChildren());
+        List<Container> containers = List.copyOf(container.getChildren());
         int ready = 0;
         for (Container child : containers) {
             addContainerPane(child);

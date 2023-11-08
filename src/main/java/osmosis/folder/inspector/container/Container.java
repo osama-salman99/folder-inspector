@@ -22,9 +22,15 @@ public abstract class Container {
 
     public abstract List<Container> getChildren();
 
-    public abstract int getNumberOfChildren();
-
     public abstract void calculateSize();
+
+    public int getNumberOfChildren() {
+        return getChildren().size();
+    }
+
+    public boolean hasNoChildren() {
+        return getNumberOfChildren() == 0;
+    }
 
     public String getPath() {
         return file.getAbsolutePath();

@@ -25,7 +25,8 @@ public class DirectoryContainer extends Container {
                 children.add(ContainerFactory.createContainer(child, this));
             }
         }
-        for (Container directory : new ArrayList<>(children)) {
+
+        for (Container directory : List.copyOf(children)) {
             directory.calculateSize();
             size += directory.getSize();
             children.sort(Comparator.comparingLong(Container::getSize));
