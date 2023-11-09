@@ -17,7 +17,7 @@
                 <TextField fx:id="pathInputField"
                            focusTraversable="false"
                            maxWidth="400"
-                           promptText="Path"
+                           promptText="C:\Program Files"
                            onAction="#onEnter"/>
                 <Button text="Inspect"
                         onAction="#inspect"/>

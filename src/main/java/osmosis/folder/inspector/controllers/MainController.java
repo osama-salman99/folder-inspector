@@ -20,6 +20,11 @@ public class MainController extends Controller {
     public TextField pathInputField;
     public ProgressIndicator progressIndicator;
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        Platform.runLater(() -> pathInputField.requestFocus());
+    }
+
     public void inspect(ActionEvent actionEvent) {
         showProgressIndicator();
         informationBox.setDisable(true);
@@ -61,11 +66,6 @@ public class MainController extends Controller {
 
     private void hideProgressIndicator() {
         progressIndicator.setVisible(false);
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        Platform.runLater(() -> pathInputField.requestFocus());
     }
 
     @FXML
