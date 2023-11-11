@@ -6,6 +6,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import osmosis.folder.inspector.constants.Constant;
+import osmosis.folder.inspector.constants.ErrorMessages;
+import osmosis.folder.inspector.constants.ResourcePaths;
 import osmosis.folder.inspector.container.ContainerFactory;
 import osmosis.folder.inspector.container.ContainerManager;
 import osmosis.folder.inspector.exceptions.InvalidDirectoryException;
@@ -29,8 +32,8 @@ public class MainController extends Controller {
         showProgressIndicator();
         informationBox.setDisable(true);
         String path = pathInputField.getText();
-        if (path.endsWith(":")) {
-            path += "\\";
+        if (path.endsWith(Constant.COLON)) {
+            path += Constant.FILE_SEPARATOR;
         }
         File file = new File(path);
         try {
@@ -45,7 +48,7 @@ public class MainController extends Controller {
             containerManager.setCurrentContainer(ContainerFactory.createContainer(file));
             informationBox.setDisable(false);
             hideProgressIndicator();
-            setScene(actionEvent, "folders.fxml");
+            setScene(actionEvent, ResourcePaths.FOLDERS);
         });
         calculatorThread.setDaemon(true);
         calculatorThread.start();
@@ -53,10 +56,10 @@ public class MainController extends Controller {
 
     private void validateFile(File file) throws InvalidDirectoryException {
         if (!file.exists()) {
-            throw new InvalidDirectoryException("Directory does not exist");
+            throw new InvalidDirectoryException(ErrorMessages.DIRECTORY_DOES_NOT_EXIST);
         }
         if (!file.isDirectory()) {
-            throw new InvalidDirectoryException("Path does not point to a directory");
+            throw new InvalidDirectoryException(ErrorMessages.PATH_DOES_NOT_POINT_TO_A_DIRECTORY);
         }
     }
 

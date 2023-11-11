@@ -12,6 +12,9 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import osmosis.folder.inspector.constants.Constant;
+import osmosis.folder.inspector.constants.ResourcePaths;
+import osmosis.folder.inspector.constants.UserMessages;
 import osmosis.folder.inspector.container.Container;
 import osmosis.folder.inspector.container.ContainerManager;
 import osmosis.folder.inspector.container.ContainerReadyListener;
@@ -33,7 +36,7 @@ public class FoldersController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Tooltip.install(progressText, new Tooltip("Items calculated"));
+        Tooltip.install(progressText, new Tooltip(UserMessages.ITEMS_CALCULATED));
         addressBar.setText(containerManager.getCurrentContainer().getPath());
         DirectoryContainer container = containerManager.getCurrentContainer();
         containerReadyListener = new ContainerReadyListener(container) {
@@ -57,13 +60,13 @@ public class FoldersController extends Controller {
     private void goToMainMenu(ActionEvent actionEvent) {
         Alert alert = new Alert(
                 Alert.AlertType.CONFIRMATION,
-                "Would you like to go back to the main menu?",
+                UserMessages.GO_BACK_MAIN_MENU,
                 ButtonType.YES,
                 ButtonType.CANCEL
         );
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
-            setScene(actionEvent, "main.fxml");
+            setScene(actionEvent, ResourcePaths.MAIN);
             ContainerManager.getInstance().clearContainer();
         }
     }
@@ -92,7 +95,7 @@ public class FoldersController extends Controller {
         boolean visibility = completed != all;
         progressIndicator.setVisible(visibility);
         progressText.setVisible(visibility);
-        progressText.setText(completed + "/" + all);
+        progressText.setText(completed + Constant.FILE_SEPARATOR + all);
     }
 
     private void addContainerPane(Container container) {
