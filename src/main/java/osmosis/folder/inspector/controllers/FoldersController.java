@@ -9,6 +9,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -31,13 +33,14 @@ public class FoldersController extends Controller {
     public Button backButton;
     public Text progressText;
     public TextField addressBar;
+    public Button copyAddressToClipboard;
     public ProgressIndicator progressIndicator;
     private ContainerReadyListener containerReadyListener;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Tooltip.install(progressText, new Tooltip(UserMessages.ITEMS_CALCULATED));
-        addressBar.setText(containerManager.getCurrentContainer().getPath());
+        installTooltips();
+        initializeAddressBar();
         DirectoryContainer container = containerManager.getCurrentContainer();
         containerReadyListener = new ContainerReadyListener(container) {
             @Override
@@ -46,6 +49,23 @@ public class FoldersController extends Controller {
             }
         };
         showContainer(container);
+    }
+
+    private void initializeAddressBar() {
+        addressBar.setText(containerManager.getCurrentContainer().getPath());
+    }
+
+    private void installTooltips() {
+        Tooltip.install(progressText, new Tooltip(UserMessages.ITEMS_CALCULATED));
+        Tooltip.install(copyAddressToClipboard, new Tooltip(UserMessages.COPY_ADDRESS_TO_CLIPBOARD));
+    }
+
+    @FXML
+    public void copyAddressToClipboard() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(addressBar.getText());
+        clipboard.setContent(content);
     }
 
     @FXML

@@ -5,36 +5,46 @@
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-<BorderPane xmlns="https://javafx.com/javafx"
-            xmlns:fx="https://javafx.com/fxml"
-            fx:controller="osmosis.folder.inspector.controllers.FoldersController"
-            prefHeight="800.0" prefWidth="1000.0">
+<BorderPane prefHeight="800.0" prefWidth="1000.0"
+            xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="osmosis.folder.inspector.controllers.FoldersController">
     <top>
         <HBox alignment="CENTER">
             <padding>
-                <Insets left="10"
-                        top="15"
-                        right="10"
-                        bottom="10"/>
+                <Insets bottom="10" left="10" right="10" top="15"/>
             </padding>
             <TextField fx:id="addressBar"
-                       HBox.hgrow="ALWAYS"
+                       minHeight="30"
+                       prefHeight="30"
+                       maxHeight="30"
                        disable="true"
-                       focusTraversable="false"/>
+                       focusTraversable="false"
+                       HBox.hgrow="ALWAYS"/>
+            <Button fx:id="copyAddressToClipboard"
+                    focusTraversable="false"
+                    maxWidth="20"
+                    maxHeight="20"
+                    onAction="#copyAddressToClipboard">
+                <graphic>
+                    <ImageView fitHeight="20"
+                               fitWidth="20">
+                        <Image url="@../../icons/copy_icon.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
         </HBox>
     </top>
     <center>
-        <ScrollPane fitToWidth="true"
-                    style="-fx-focus-color: transparent;">
-            <VBox fx:id="foldersVBox"
-                  spacing="2"/>
+        <ScrollPane fitToWidth="true" style="-fx-focus-color: transparent;">
+            <VBox fx:id="foldersVBox" spacing="2"/>
             <padding>
-                <Insets top="5"
-                        bottom="5"/>
+                <Insets bottom="5" top="5"/>
             </padding>
         </ScrollPane>
     </center>
@@ -42,9 +52,7 @@
         <BorderPane>
             <left>
                 <HBox alignment="BOTTOM_LEFT">
-                    <Button fx:id="backButton"
-                            onAction="#goBack"
-                            focusTraversable="false"
+                    <Button fx:id="backButton" focusTraversable="false" onAction="#goBack"
                             text="Back">
                         <HBox.margin>
                             <Insets>
@@ -68,9 +76,8 @@
                             </Insets>
                         </HBox.margin>
                     </Text>
-                    <ProgressIndicator fx:id="progressIndicator"
-                                       prefWidth="20"
-                                       prefHeight="20">
+                    <ProgressIndicator fx:id="progressIndicator" prefHeight="20"
+                                       prefWidth="20">
                         <HBox.margin>
                             <Insets>
                                 <top>5</top>
