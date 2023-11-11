@@ -5,15 +5,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import osmosis.folder.inspector.constants.Constant;
+import osmosis.folder.inspector.constants.ResourcePaths;
 
 import java.util.Objects;
 
 public class Main extends Application {
-
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main.fxml")));
-        primaryStage.setTitle("Folder Inspector");
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(ResourcePaths.MAIN)));
+        primaryStage.setTitle(Constant.FOLDER_INSPECTOR);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

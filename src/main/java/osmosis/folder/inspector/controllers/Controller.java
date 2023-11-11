@@ -8,25 +8,27 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import osmosis.folder.inspector.constants.ErrorMessages;
+import osmosis.folder.inspector.constants.providers.ResourcePathProvider;
 
 import java.util.Objects;
 
 public abstract class Controller implements Initializable {
-
     protected void setScene(ActionEvent actionEvent, String resourceName) {
-        setScene(getStage(actionEvent), resourceName);
+        setSceneAsync(getStage(actionEvent), resourceName);
     }
 
-    protected void setScene(Stage stage, String resourceName) {
-        Platform.runLater(() -> {
-            try {
-                stage.setScene(new Scene(FXMLLoader
-                        .load(Objects.requireNonNull(getClass().getResource("/osmosis/folder/inspector/" + resourceName)))));
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                showErrorAlert("Error occurred: " + exception.getMessage());
-            }
-        });
+    protected void setSceneAsync(Stage stage, String resourceName) {
+        Platform.runLater(() -> setScene(stage, resourceName));
+    }
+
+    private void setScene(Stage stage, String resourceName) {
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getResource(ResourcePathProvider.getFxml(resourceName))))));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            showErrorAlert(ErrorMessages.ERROR_OCCURRED + exception.getMessage());
+        }
     }
 
     protected static Stage getStage(ActionEvent actionEvent) {
