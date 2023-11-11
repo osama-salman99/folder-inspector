@@ -10,17 +10,13 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import osmosis.folder.inspector.constants.Constant;
 import osmosis.folder.inspector.container.Container;
-
-import java.text.DecimalFormat;
 
 import static osmosis.folder.inspector.constants.Constant.ICON_SIZE;
 import static osmosis.folder.inspector.constants.Constant.PROGRESS_INDICATOR_SIZE;
 
 public class ContainerPane extends BorderPane {
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###");
-    private static final Color ACCENT_COLOR = Color.rgb(190, 211, 231);
     private static boolean previousIsDefault = true;
     private final Container container;
 
@@ -28,7 +24,7 @@ public class ContainerPane extends BorderPane {
         this.container = container;
         setPadding(new Insets(5, 20, 5, 20));
         if (previousIsDefault) {
-            setBackground(new Background(new BackgroundFill(ACCENT_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
+            setBackground(new Background(new BackgroundFill(Constant.ACCENT_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
         }
         previousIsDefault = !previousIsDefault;
 
@@ -38,7 +34,7 @@ public class ContainerPane extends BorderPane {
 
     private Node createSizeLabel(Container container) {
         if (container.isReady()) {
-            return new Label(DECIMAL_FORMAT.format(container.getSize()));
+            return new Label(Constant.DECIMAL_FORMAT.format(container.getSize()));
         }
         return createProgressIndicator();
     }
