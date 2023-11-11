@@ -45,12 +45,10 @@ public class DirectoryContainer extends Container {
         return FOLDER_ICON;
     }
 
-    @Override
     public List<Container> getChildren() {
         return children;
     }
 
-    @Override
     public int getNumberOfChildren() {
         return childrenFiles.length;
     }

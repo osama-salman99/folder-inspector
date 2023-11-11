@@ -3,8 +3,6 @@ package osmosis.folder.inspector.container;
 import javafx.scene.image.Image;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 public class FileContainer extends Container {
@@ -19,16 +17,6 @@ public class FileContainer extends Container {
         started = true;
         size = file.length();
         ready = true;
-    }
-
-    @Override
-    public List<Container> getChildren() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public int getNumberOfChildren() {
-        return 0;
     }
 
     @Override

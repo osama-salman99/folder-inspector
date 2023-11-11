@@ -15,6 +15,7 @@ import javafx.scene.text.Text;
 import osmosis.folder.inspector.container.Container;
 import osmosis.folder.inspector.container.ContainerManager;
 import osmosis.folder.inspector.container.ContainerReadyListener;
+import osmosis.folder.inspector.container.DirectoryContainer;
 import osmosis.folder.inspector.panes.ContainerPane;
 
 import java.net.URL;
@@ -34,7 +35,7 @@ public class FoldersController extends Controller {
     public void initialize(URL location, ResourceBundle resources) {
         Tooltip.install(progressText, new Tooltip("Items calculated"));
         addressBar.setText(containerManager.getCurrentContainer().getPath());
-        Container container = containerManager.getCurrentContainer();
+        DirectoryContainer container = containerManager.getCurrentContainer();
         containerReadyListener = new ContainerReadyListener(container) {
             @Override
             public void onContainerReady() {
@@ -67,10 +68,7 @@ public class FoldersController extends Controller {
         }
     }
 
-    private void showContainer(Container container) {
-        if (container.hasNoChildren()) {
-            return;
-        }
+    private void showContainer(DirectoryContainer container) {
         addressBar.requestFocus();
         containerManager.setCurrentContainer(container);
         addressBar.setText(container.getPath());
@@ -99,7 +97,9 @@ public class FoldersController extends Controller {
 
     private void addContainerPane(Container container) {
         ContainerPane containerPane = new ContainerPane(container);
-        containerPane.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> showContainer(containerPane.getContainer()));
+        if (container instanceof DirectoryContainer) {
+            containerPane.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> showContainer((DirectoryContainer) containerPane.getContainer()));
+        }
         foldersVBox.getChildren().add(containerPane);
     }
 }

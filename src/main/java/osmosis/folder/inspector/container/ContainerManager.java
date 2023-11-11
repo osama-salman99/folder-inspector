@@ -2,13 +2,13 @@ package osmosis.folder.inspector.container;
 
 public class ContainerManager {
     private static final ContainerManager INSTANCE = new ContainerManager();
-    private Container currentContainer;
+    private DirectoryContainer currentContainer;
 
-    public Container getCurrentContainer() {
+    public DirectoryContainer getCurrentContainer() {
         return currentContainer;
     }
 
-    public void setCurrentContainer(Container currentContainer) {
+    public void setCurrentContainer(DirectoryContainer currentContainer) {
         this.currentContainer = currentContainer;
     }
 

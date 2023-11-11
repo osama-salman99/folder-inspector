@@ -1,17 +1,17 @@
 package osmosis.folder.inspector.container;
 
 public abstract class ContainerReadyListener {
-    private Container container;
+    private DirectoryContainer container;
 
-    public ContainerReadyListener(Container container) {
+    public ContainerReadyListener(DirectoryContainer container) {
         this.container = container;
     }
 
-    public Container getContainer() {
+    public DirectoryContainer getContainer() {
         return container;
     }
 
-    public void setContainer(Container container) {
+    public void setContainer(DirectoryContainer container) {
         this.container = container;
     }
 

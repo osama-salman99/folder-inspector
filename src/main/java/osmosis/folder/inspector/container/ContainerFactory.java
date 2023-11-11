@@ -3,8 +3,8 @@ package osmosis.folder.inspector.container;
 import java.io.File;
 
 public class ContainerFactory {
-    public static Container createContainer(File file) {
-        return createContainer(file, null);
+    public static DirectoryContainer createContainer(File file) {
+        return new DirectoryContainer(file, null);
     }
 
     public static Container createContainer(File file, DirectoryContainer parent) {
