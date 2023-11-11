@@ -13,20 +13,23 @@ import javafx.scene.layout.Pane;
 import osmosis.folder.inspector.constants.Constant;
 import osmosis.folder.inspector.container.Container;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static osmosis.folder.inspector.constants.Constant.ICON_SIZE;
 import static osmosis.folder.inspector.constants.Constant.PROGRESS_INDICATOR_SIZE;
 
 public class ContainerPane extends BorderPane {
-    private static boolean previousIsDefault = true;
+    public static final Background ACCENT_COLORED_BACKGROUND = new Background(new BackgroundFill(Constant.ACCENT_COLOR, CornerRadii.EMPTY, Insets.EMPTY));
+    private static final AtomicBoolean previousIsDefault = new AtomicBoolean(true);
     private final Container container;
 
     public ContainerPane(Container container) {
         this.container = container;
         setPadding(new Insets(5, 20, 5, 20));
-        if (previousIsDefault) {
-            setBackground(new Background(new BackgroundFill(Constant.ACCENT_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
+        if (previousIsDefault.get()) {
+            setBackground(ACCENT_COLORED_BACKGROUND);
         }
-        previousIsDefault = !previousIsDefault;
+        previousIsDefault.set(!previousIsDefault.get());
 
         setLeft(createNamePane(container));
         setRight(createSizeLabel(container));
