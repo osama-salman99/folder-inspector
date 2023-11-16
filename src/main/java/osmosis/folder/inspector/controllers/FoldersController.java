@@ -29,25 +29,19 @@ import java.util.ResourceBundle;
 
 public class FoldersController extends Controller {
     private static final ContainerManager containerManager = ContainerManager.getInstance();
+    private final ContainerReadyListener containerReadyListener = () -> Platform.runLater(() -> showContainer(containerManager.getCurrentContainer()));
     public VBox foldersVBox;
     public Button backButton;
     public Text progressText;
     public TextField addressBar;
     public Button copyAddressToClipboard;
     public ProgressIndicator progressIndicator;
-    private ContainerReadyListener containerReadyListener;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         installTooltips();
         initializeAddressBar();
         DirectoryContainer container = containerManager.getCurrentContainer();
-        containerReadyListener = new ContainerReadyListener(container) {
-            @Override
-            public void onContainerReady() {
-                Platform.runLater(() -> showContainer(containerReadyListener.getContainer()));
-            }
-        };
         showContainer(container);
     }
 
@@ -78,13 +72,7 @@ public class FoldersController extends Controller {
     }
 
     private void goToMainMenu(ActionEvent actionEvent) {
-        Alert alert = new Alert(
-                Alert.AlertType.CONFIRMATION,
-                UserMessages.GO_BACK_MAIN_MENU,
-                ButtonType.YES,
-                ButtonType.CANCEL
-        );
-        alert.showAndWait();
+        Alert alert = showBackToMainMenuAlert();
         if (alert.getResult() == ButtonType.YES) {
             setScene(actionEvent, ResourcePaths.MAIN);
             ContainerManager.getInstance().clearContainer();
@@ -95,7 +83,6 @@ public class FoldersController extends Controller {
         addressBar.requestFocus();
         containerManager.setCurrentContainer(container);
         addressBar.setText(container.getPath());
-        containerReadyListener.setContainer(container);
         container.setContainerReadyListener(this.containerReadyListener);
         if (!container.isStarted()) {
             Thread calculatorThread = new Thread(container::calculateSize);
@@ -125,4 +112,18 @@ public class FoldersController extends Controller {
         }
         foldersVBox.getChildren().add(containerPane);
     }
+
+    private static Alert showBackToMainMenuAlert() {
+        Alert alert = new Alert(
+                Alert.AlertType.CONFIRMATION,
+                UserMessages.GO_BACK_MAIN_MENU,
+                ButtonType.YES,
+                ButtonType.CANCEL
+        );
+        alert.showAndWait();
+        return alert;
+    }
+
+
+
 }
