@@ -45,7 +45,7 @@ public class MainController extends Controller {
             return;
         }
         Thread calculatorThread = new Thread(() -> {
-            containerManager.setCurrentContainer(ContainerFactory.createContainer(file));
+            containerManager.setCurrentContainer(ContainerFactory.createDirectoryContainer(file));
             informationBox.setDisable(false);
             hideProgressIndicator();
             setScene(actionEvent, ResourcePaths.FOLDERS);

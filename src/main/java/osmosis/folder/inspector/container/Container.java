@@ -1,7 +1,5 @@
 package osmosis.folder.inspector.container;
 
-import javafx.scene.image.Image;
-
 import java.io.File;
 import java.util.Objects;
 
@@ -61,6 +59,4 @@ public abstract class Container {
     }
 
     public abstract void calculateSize();
-
-    public abstract Image getIcon();
 }

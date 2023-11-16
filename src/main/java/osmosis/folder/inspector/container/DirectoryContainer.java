@@ -1,17 +1,12 @@
 package osmosis.folder.inspector.container;
 
-import javafx.scene.image.Image;
-import osmosis.folder.inspector.constants.ResourcePaths;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 public class DirectoryContainer extends Container {
-    private static final Image FOLDER_ICON = new Image(Objects.requireNonNull(FileContainer.class.getResource(ResourcePaths.FOLDER_ICON)).toExternalForm());
     private final List<Container> children;
     private final File[] childrenFiles;
 
@@ -39,11 +34,6 @@ public class DirectoryContainer extends Container {
             invokeListener();
         }
         ready = true;
-    }
-
-    @Override
-    public Image getIcon() {
-        return FOLDER_ICON;
     }
 
     public List<Container> getChildren() {

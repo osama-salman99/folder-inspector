@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import osmosis.folder.inspector.constants.Constant;
+import osmosis.folder.inspector.constants.providers.ContainerIconProvider;
 import osmosis.folder.inspector.container.Container;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -60,7 +61,7 @@ public class ContainerPane extends BorderPane {
     }
 
     private static ImageView createIcon(Container container) {
-        ImageView imageView = new ImageView(container.getIcon());
+        ImageView imageView = new ImageView(ContainerIconProvider.getIcon(container));
         imageView.setFitHeight(ICON_SIZE);
         imageView.setPreserveRatio(true);
         return imageView;

@@ -11,8 +11,8 @@ class ContainerTest {
 
     @Test
     public void calculatesSizeOfFile() {
-        File file = getFile("folder1/f1-file1.txt");
-        Container container = ContainerFactory.createContainer(file);
+        File file = getFile("folder1/folder4/f1-file1.txt");
+        Container container = ContainerFactory.createContainer(file, null);
         container.calculateSize();
         long size = container.getSize();
 
@@ -22,11 +22,11 @@ class ContainerTest {
     @Test
     public void calculatesSizeOfDirectory() {
         File file = getFile("folder1");
-        Container container = ContainerFactory.createContainer(file);
+        Container container = ContainerFactory.createDirectoryContainer(file);
         container.calculateSize();
         long size = container.getSize();
 
-        assertEquals(3519, size);
+        assertEquals(3543, size);
     }
 
     private File getFile(String path) {
