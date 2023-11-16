@@ -64,6 +64,9 @@
                     </Button>
                 </HBox>
             </left>
+            <center>
+                <Text fx:id="directorySizeText"/>
+            </center>
             <right>
                 <HBox alignment="BOTTOM_RIGHT">
                     <Text fx:id="progressText">

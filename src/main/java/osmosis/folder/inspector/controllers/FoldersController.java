@@ -34,6 +34,7 @@ public class FoldersController extends Controller {
     public Button backButton;
     public Text progressText;
     public TextField addressBar;
+    public Text directorySizeText;
     public Button copyAddressToClipboard;
     public ProgressIndicator progressIndicator;
 
@@ -88,6 +89,8 @@ public class FoldersController extends Controller {
             Thread calculatorThread = new Thread(container::calculateSize);
             calculatorThread.setDaemon(true);
             calculatorThread.start();
+        } else if (container.isReady()) {
+            directorySizeText.setText(Constant.DECIMAL_FORMAT.format(container.getSize()));
         }
         foldersVBox.getChildren().clear();
         long ready = List.copyOf(container.getChildren())
