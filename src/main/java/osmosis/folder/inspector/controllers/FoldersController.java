@@ -123,7 +123,4 @@ public class FoldersController extends Controller {
         alert.showAndWait();
         return alert;
     }
-
-
-
 }
