@@ -29,7 +29,8 @@ import java.util.ResourceBundle;
 
 public class FoldersController extends Controller {
     private static final ContainerManager containerManager = ContainerManager.getInstance();
-    public VBox foldersVBox;    private final ContainerReadyListener containerReadyListener = () -> Platform.runLater(() -> showContainer(containerManager.getCurrentContainer()));
+    private final ContainerReadyListener containerReadyListener = () -> Platform.runLater(() -> showContainer(containerManager.getCurrentContainer()));
+    public VBox foldersVBox;
     public Button backButton;
     public Text progressText;
     public TextField addressBar;
@@ -127,6 +128,4 @@ public class FoldersController extends Controller {
         alert.showAndWait();
         return alert;
     }
-
-
 }
