@@ -29,11 +29,11 @@ import java.util.ResourceBundle;
 
 public class FoldersController extends Controller {
     private static final ContainerManager containerManager = ContainerManager.getInstance();
-    private final ContainerReadyListener containerReadyListener = () -> Platform.runLater(() -> showContainer(containerManager.getCurrentContainer()));
-    public VBox foldersVBox;
+    public VBox foldersVBox;    private final ContainerReadyListener containerReadyListener = () -> Platform.runLater(() -> showContainer(containerManager.getCurrentContainer()));
     public Button backButton;
     public Text progressText;
     public TextField addressBar;
+    public Text folderIsEmptyText;
     public Text directorySizeText;
     public Button copyAddressToClipboard;
     public ProgressIndicator progressIndicator;
@@ -93,6 +93,7 @@ public class FoldersController extends Controller {
             directorySizeText.setText(Constant.DECIMAL_FORMAT.format(container.getSize()));
         }
         foldersVBox.getChildren().clear();
+        folderIsEmptyText.setVisible(container.isEmpty());
         long ready = List.copyOf(container.getChildren())
                 .stream()
                 .peek(this::addContainerPane)
@@ -126,4 +127,6 @@ public class FoldersController extends Controller {
         alert.showAndWait();
         return alert;
     }
+
+
 }

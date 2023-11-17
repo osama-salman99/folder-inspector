@@ -1,10 +1,13 @@
 package osmosis.folder.inspector.container;
 
+import osmosis.folder.inspector.constants.Constant;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class DirectoryContainer extends Container {
     private final List<Container> children;
@@ -12,7 +15,7 @@ public class DirectoryContainer extends Container {
 
     public DirectoryContainer(File file, DirectoryContainer parent) {
         super(file, parent);
-        this.childrenFiles = file.listFiles();
+        this.childrenFiles = Optional.ofNullable(file.listFiles()).orElse(Constant.EMPTY_FILES_ARRAY);
         this.children = new ArrayList<>();
     }
 
@@ -42,5 +45,9 @@ public class DirectoryContainer extends Container {
 
     public int getNumberOfChildren() {
         return childrenFiles.length;
+    }
+
+    public boolean isEmpty() {
+        return childrenFiles.length == 0;
     }
 }
