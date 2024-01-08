@@ -77,7 +77,7 @@ public class FoldersController extends Controller {
     }
 
     private void goBackToMainMenu(ActionEvent actionEvent) {
-        setScene(actionEvent, ResourcePaths.MAIN);
+        setScene(actionEvent, ResourcePaths.MAIN_FXML);
         ContainerManager.getInstance().clearContainer();
     }
 

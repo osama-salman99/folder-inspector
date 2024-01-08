@@ -13,7 +13,7 @@ import java.util.Objects;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(ResourcePaths.MAIN)));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(ResourcePaths.MAIN_FXML)));
         primaryStage.setTitle(Constant.FOLDER_INSPECTOR);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

@@ -48,7 +48,7 @@ public class MainController extends Controller {
             containerManager.setCurrentContainer(ContainerFactory.createDirectoryContainer(file));
             informationBox.setDisable(false);
             hideProgressIndicator();
-            setScene(actionEvent, ResourcePaths.FOLDERS);
+            setScene(actionEvent, ResourcePaths.FOLDERS_FXML);
         });
         calculatorThread.setDaemon(true);
         calculatorThread.start();
