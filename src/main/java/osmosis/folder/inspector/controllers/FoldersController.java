@@ -3,12 +3,7 @@ package osmosis.folder.inspector.controllers;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
@@ -17,6 +12,7 @@ import javafx.scene.text.Text;
 import osmosis.folder.inspector.constants.Constant;
 import osmosis.folder.inspector.constants.ResourcePaths;
 import osmosis.folder.inspector.constants.UserMessages;
+import osmosis.folder.inspector.constants.providers.AlertProvider;
 import osmosis.folder.inspector.container.Container;
 import osmosis.folder.inspector.container.ContainerManager;
 import osmosis.folder.inspector.container.ContainerReadyListener;
@@ -70,15 +66,19 @@ public class FoldersController extends Controller {
             showContainer(containerManager.getCurrentContainer().getParent());
             return;
         }
-        goToMainMenu(actionEvent);
+        confirmGoingToMainMenu(actionEvent);
     }
 
-    private void goToMainMenu(ActionEvent actionEvent) {
-        Alert alert = showBackToMainMenuAlert();
-        if (alert.getResult() == ButtonType.YES) {
-            setScene(actionEvent, ResourcePaths.MAIN);
-            ContainerManager.getInstance().clearContainer();
-        }
+    private void confirmGoingToMainMenu(ActionEvent actionEvent) {
+        AlertProvider.createBackToMainMenuAlert()
+                .showAndWait()
+                .filter(ButtonType.YES::equals)
+                .ifPresent(result -> goBackToMainMenu(actionEvent));
+    }
+
+    private void goBackToMainMenu(ActionEvent actionEvent) {
+        setScene(actionEvent, ResourcePaths.MAIN);
+        ContainerManager.getInstance().clearContainer();
     }
 
     private void showContainer(DirectoryContainer container) {
@@ -116,16 +116,5 @@ public class FoldersController extends Controller {
             containerPane.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> showContainer((DirectoryContainer) containerPane.getContainer()));
         }
         foldersVBox.getChildren().add(containerPane);
-    }
-
-    private static Alert showBackToMainMenuAlert() {
-        Alert alert = new Alert(
-                Alert.AlertType.CONFIRMATION,
-                UserMessages.GO_BACK_MAIN_MENU,
-                ButtonType.YES,
-                ButtonType.CANCEL
-        );
-        alert.showAndWait();
-        return alert;
     }
 }
