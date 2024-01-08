@@ -13,6 +13,7 @@ import javafx.scene.layout.Pane;
 import osmosis.folder.inspector.constants.Constant;
 import osmosis.folder.inspector.constants.providers.ContainerIconProvider;
 import osmosis.folder.inspector.container.Container;
+import osmosis.folder.inspector.formatter.DigitalFormatter;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -38,7 +39,7 @@ public class ContainerPane extends BorderPane {
 
     private Node createSizeLabel(Container container) {
         if (container.isReady()) {
-            return new Label(Constant.DECIMAL_FORMAT.format(container.getSize()));
+            return new Label(DigitalFormatter.formatSize(container.getSize()));
         }
         return createProgressIndicator();
     }

@@ -17,6 +17,7 @@ import osmosis.folder.inspector.container.Container;
 import osmosis.folder.inspector.container.ContainerManager;
 import osmosis.folder.inspector.container.ContainerReadyListener;
 import osmosis.folder.inspector.container.DirectoryContainer;
+import osmosis.folder.inspector.formatter.DigitalFormatter;
 import osmosis.folder.inspector.panes.ContainerPane;
 
 import java.net.URL;
@@ -91,7 +92,7 @@ public class FoldersController extends Controller {
             calculatorThread.setDaemon(true);
             calculatorThread.start();
         } else if (container.isReady()) {
-            directorySizeText.setText(Constant.DECIMAL_FORMAT.format(container.getSize()));
+            directorySizeText.setText(DigitalFormatter.formatSize(container.getSize()));
         }
         foldersVBox.getChildren().clear();
         folderIsEmptyText.setVisible(container.isEmpty());
