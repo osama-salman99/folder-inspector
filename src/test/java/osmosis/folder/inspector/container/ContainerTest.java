@@ -20,6 +20,16 @@ class ContainerTest {
     }
 
     @Test
+    public void calculatesSizeOfTextFileWithLineBreaks() {
+        File file = getFile("folder1/folder2/f2-file1.txt");
+        Container container = ContainerFactory.createContainer(file, null);
+        container.calculateSize();
+        long size = container.getSize();
+
+        assertEquals(3495, size);
+    }
+
+    @Test
     public void calculatesSizeOfDirectory() {
         File file = getFile("folder1");
         Container container = ContainerFactory.createDirectoryContainer(file);
