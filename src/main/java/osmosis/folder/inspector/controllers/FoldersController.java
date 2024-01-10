@@ -19,7 +19,7 @@ import osmosis.folder.inspector.constants.UserMessages;
 import osmosis.folder.inspector.constants.providers.AlertProvider;
 import osmosis.folder.inspector.container.Container;
 import osmosis.folder.inspector.container.ContainerManager;
-import osmosis.folder.inspector.container.ContainerReadyListener;
+import osmosis.folder.inspector.container.ChildContainerReadyListener;
 import osmosis.folder.inspector.container.DirectoryContainer;
 import osmosis.folder.inspector.formatter.DigitalFormatter;
 import osmosis.folder.inspector.panes.ContainerPane;
@@ -30,7 +30,7 @@ import java.util.ResourceBundle;
 
 public class FoldersController extends Controller {
     private static final ContainerManager containerManager = ContainerManager.getInstance();
-    private final ContainerReadyListener containerReadyListener = () -> Platform.runLater(() -> showContainer(containerManager.getCurrentContainer()));
+    private final ChildContainerReadyListener childContainerReadyListener = () -> Platform.runLater(this::refreshContents);
     public VBox foldersVBox;
     public Button backButton;
     public Text progressText;
@@ -97,12 +97,17 @@ public class FoldersController extends Controller {
         addressBar.requestFocus();
         containerManager.setCurrentContainer(container);
         addressBar.setText(container.getPath());
-        container.setContainerReadyListener(this.containerReadyListener);
+        container.setContainerReadyListener(this.childContainerReadyListener);
+        folderIsEmptyText.setVisible(container.isEmpty());
+        refreshContents();
+    }
+
+    private void refreshContents() {
+        foldersVBox.getChildren().clear();
+        DirectoryContainer container = containerManager.getCurrentContainer();
         if (container.isReady()) {
             directorySizeText.setText(DigitalFormatter.formatSize(container.getSize()));
         }
-        foldersVBox.getChildren().clear();
-        folderIsEmptyText.setVisible(container.isEmpty());
         long ready = List.copyOf(container.getChildren())
                 .stream()
                 .peek(this::addContainerPane)

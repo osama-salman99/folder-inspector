@@ -7,15 +7,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class DirectoryContainer extends Container {
     private final List<Container> children;
     private final File[] childrenFiles;
+    private ChildContainerReadyListener childContainerReadyListener;
 
     public DirectoryContainer(File file, DirectoryContainer parent) {
         super(file, parent);
         this.childrenFiles = Optional.ofNullable(file.listFiles()).orElse(Constant.EMPTY_FILES_ARRAY);
+        this.childContainerReadyListener = null;
         this.children = new ArrayList<>();
     }
 
@@ -36,6 +39,16 @@ public class DirectoryContainer extends Container {
             invokeListener();
         }
         ready = true;
+    }
+
+    public void setContainerReadyListener(ChildContainerReadyListener childContainerReadyListener) {
+        this.childContainerReadyListener = childContainerReadyListener;
+    }
+
+    private void invokeListener() {
+        if (Objects.nonNull(childContainerReadyListener)) {
+            childContainerReadyListener.onContainerReady();
+        }
     }
 
     public List<Container> getChildren() {
