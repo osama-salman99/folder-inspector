@@ -17,9 +17,9 @@ import osmosis.folder.inspector.constants.Constant;
 import osmosis.folder.inspector.constants.ResourcePaths;
 import osmosis.folder.inspector.constants.UserMessages;
 import osmosis.folder.inspector.constants.providers.AlertProvider;
+import osmosis.folder.inspector.container.ChildContainerReadyListener;
 import osmosis.folder.inspector.container.Container;
 import osmosis.folder.inspector.container.ContainerManager;
-import osmosis.folder.inspector.container.ChildContainerReadyListener;
 import osmosis.folder.inspector.container.DirectoryContainer;
 import osmosis.folder.inspector.formatter.DigitalFormatter;
 import osmosis.folder.inspector.panes.ContainerPane;
@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class FoldersController extends Controller implements ChildContainerReadyListener {
+    private int i = 1;
     private static final ContainerManager containerManager = ContainerManager.getInstance();
     public VBox foldersVBox;
     public Button backButton;
@@ -50,6 +51,7 @@ public class FoldersController extends Controller implements ChildContainerReady
 
     @Override
     public void onContainerReady() {
+        System.out.println("refresh #" + i++);
         Platform.runLater(this::refreshContents);
     }
 
@@ -98,11 +100,12 @@ public class FoldersController extends Controller implements ChildContainerReady
     }
 
     private void showContainer(DirectoryContainer container) {
+        containerManager.getCurrentContainer().clearChildContainerReadyListener();
         containerManager.setCurrentContainer(container);
+        container.setChildContainerReadyListener(this);
         addressBar.requestFocus();
         addressBar.setText(container.getPath());
         folderIsEmptyText.setVisible(container.isEmpty());
-        container.setContainerReadyListener(this);
         refreshContents();
     }
 

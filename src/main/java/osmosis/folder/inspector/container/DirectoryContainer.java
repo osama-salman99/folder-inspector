@@ -41,8 +41,12 @@ public class DirectoryContainer extends Container {
         ready = true;
     }
 
-    public void setContainerReadyListener(ChildContainerReadyListener childContainerReadyListener) {
+    public void setChildContainerReadyListener(ChildContainerReadyListener childContainerReadyListener) {
         this.childContainerReadyListener = childContainerReadyListener;
+    }
+
+    public void clearChildContainerReadyListener() {
+        this.childContainerReadyListener = null;
     }
 
     private void invokeListener() {
