@@ -9,7 +9,6 @@ public class FileContainer extends Container {
 
     @Override
     public void calculateSize() {
-        started = true;
         size = file.length();
         ready = true;
     }

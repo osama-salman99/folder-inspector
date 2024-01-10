@@ -21,7 +21,6 @@ public class DirectoryContainer extends Container {
 
     @Override
     public void calculateSize() {
-        started = true;
         size = 0;
         if (childrenFiles != null) {
             for (File child : childrenFiles) {

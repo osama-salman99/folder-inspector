@@ -8,14 +8,12 @@ public abstract class Container {
     protected final DirectoryContainer parent;
     protected long size;
     protected boolean ready;
-    protected boolean started;
     protected ContainerReadyListener containerReadyListener;
 
     public Container(File file, DirectoryContainer parent) {
         this.parent = parent;
         this.file = file;
         this.containerReadyListener = null;
-        this.started = false;
         this.ready = false;
         this.size = Long.MIN_VALUE;
     }
@@ -44,10 +42,6 @@ public abstract class Container {
         if (Objects.nonNull(containerReadyListener)) {
             containerReadyListener.onContainerReady();
         }
-    }
-
-    public boolean isStarted() {
-        return started;
     }
 
     public boolean isReady() {
