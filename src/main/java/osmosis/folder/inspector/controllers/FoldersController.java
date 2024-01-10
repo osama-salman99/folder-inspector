@@ -28,9 +28,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class FoldersController extends Controller {
+public class FoldersController extends Controller implements ChildContainerReadyListener {
     private static final ContainerManager containerManager = ContainerManager.getInstance();
-    private final ChildContainerReadyListener childContainerReadyListener = () -> Platform.runLater(this::refreshContents);
     public VBox foldersVBox;
     public Button backButton;
     public Text progressText;
@@ -47,6 +46,11 @@ public class FoldersController extends Controller {
         DirectoryContainer container = containerManager.getCurrentContainer();
         showContainer(container);
         startSizeCalculation(container);
+    }
+
+    @Override
+    public void onContainerReady() {
+        Platform.runLater(this::refreshContents);
     }
 
     @FXML
@@ -94,11 +98,11 @@ public class FoldersController extends Controller {
     }
 
     private void showContainer(DirectoryContainer container) {
-        addressBar.requestFocus();
         containerManager.setCurrentContainer(container);
+        addressBar.requestFocus();
         addressBar.setText(container.getPath());
-        container.setContainerReadyListener(this.childContainerReadyListener);
         folderIsEmptyText.setVisible(container.isEmpty());
+        container.setContainerReadyListener(this);
         refreshContents();
     }
 
