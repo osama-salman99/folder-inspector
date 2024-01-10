@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class FoldersController extends Controller implements ChildContainerReadyListener {
-    private int i = 1;
     private static final ContainerManager containerManager = ContainerManager.getInstance();
     public VBox foldersVBox;
     public Button backButton;
@@ -51,7 +50,6 @@ public class FoldersController extends Controller implements ChildContainerReady
 
     @Override
     public void onContainerReady() {
-        System.out.println("refresh #" + i++);
         Platform.runLater(this::refreshContents);
     }
 
