@@ -113,7 +113,7 @@ public class FoldersController extends Controller implements ChildContainerReady
         if (container.isReady()) {
             directorySizeText.setText(DigitalFormatter.formatSize(container.getSize()));
         }
-        long ready = List.copyOf(container.getChildren())
+        long ready = List.copyOf(container.getChildrenContainers())
                 .stream()
                 .peek(this::addContainerPane)
                 .filter(Container::isReady)

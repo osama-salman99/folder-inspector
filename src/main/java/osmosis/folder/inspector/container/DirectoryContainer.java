@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class DirectoryContainer extends Container {
-    private final List<Container> children;
+    private final List<Container> childrenContainers;
     private final File[] childrenFiles;
     private ChildContainerReadyListener childContainerReadyListener;
 
@@ -19,7 +19,7 @@ public class DirectoryContainer extends Container {
         super(file, parent);
         this.childrenFiles = Optional.ofNullable(file.listFiles()).orElse(Constant.EMPTY_FILES_ARRAY);
         this.childContainerReadyListener = null;
-        this.children = new ArrayList<>();
+        this.childrenContainers = new ArrayList<>();
     }
 
     @Override
@@ -27,15 +27,15 @@ public class DirectoryContainer extends Container {
         size = 0;
         if (childrenFiles != null) {
             for (File child : childrenFiles) {
-                children.add(ContainerFactory.createContainer(child, this));
+                childrenContainers.add(ContainerFactory.createContainer(child, this));
             }
         }
 
-        for (Container directory : List.copyOf(children)) {
+        for (Container directory : List.copyOf(childrenContainers)) {
             directory.calculateSize();
             size += directory.getSize();
-            children.sort(Comparator.comparingLong(Container::getSize));
-            Collections.reverse(children);
+            childrenContainers.sort(Comparator.comparingLong(Container::getSize));
+            Collections.reverse(childrenContainers);
             invokeListener();
         }
         ready = true;
@@ -55,8 +55,8 @@ public class DirectoryContainer extends Container {
         }
     }
 
-    public List<Container> getChildren() {
-        return children;
+    public List<Container> getChildrenContainers() {
+        return childrenContainers;
     }
 
     public int getNumberOfChildren() {
