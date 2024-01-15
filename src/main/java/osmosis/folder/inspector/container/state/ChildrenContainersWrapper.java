@@ -29,7 +29,7 @@ public class ChildrenContainersWrapper {
                     .map(child -> ContainerFactory.createContainer(child, directoryContainer))
                     .collect(Collectors.toList());
         }
-        return containers;
+        return List.copyOf(containers);
     }
 
     public boolean isEmpty() {
@@ -41,8 +41,7 @@ public class ChildrenContainersWrapper {
     }
 
     public void sortContainers() {
-        List<Container> childrenContainers = getChildrenContainers();
-        childrenContainers.sort(Comparator.comparingLong(Container::getSize));
-        Collections.reverse(childrenContainers);
+        containers.sort(Comparator.comparingLong(Container::getSize));
+        Collections.reverse(containers);
     }
 }

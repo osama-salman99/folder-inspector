@@ -8,8 +8,9 @@ public class FileContainer extends Container {
     }
 
     @Override
-    public void calculateSize() {
+    public long calculateSize() {
         size = file.length();
         ready = true;
+        return size;
     }
 }

@@ -3,8 +3,6 @@ package osmosis.folder.inspector.container;
 import osmosis.folder.inspector.container.state.ChildrenContainersWrapper;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,17 +17,18 @@ public class DirectoryContainer extends Container {
     }
 
     @Override
-    public void calculateSize() {
-        size = 0;
+    public long calculateSize() {
         List<Container> childrenContainers = getChildrenContainers();
 
-        for (Container directory : List.copyOf(childrenContainers)) {
+        size = 0;
+        for (Container directory : childrenContainers) {
             directory.calculateSize();
             size += directory.getSize();
             childrenContainersWrapper.sortContainers();
             invokeListener();
         }
         ready = true;
+        return size;
     }
 
     public void setChildContainerReadyListener(ChildContainerReadyListener childContainerReadyListener) {

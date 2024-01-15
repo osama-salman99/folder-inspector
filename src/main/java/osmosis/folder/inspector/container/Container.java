@@ -40,5 +40,5 @@ public abstract class Container {
         return Objects.nonNull(parent);
     }
 
-    public abstract void calculateSize();
+    public abstract long calculateSize();
 }
