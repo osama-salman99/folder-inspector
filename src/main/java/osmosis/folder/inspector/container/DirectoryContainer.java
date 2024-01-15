@@ -20,6 +20,13 @@ public class DirectoryContainer extends Container {
     public long calculateSize() {
         List<Container> childrenContainers = getChildrenContainers();
 
+        // TODO: Calculate how many file children there are and sum them up
+        if (childrenContainers.stream()
+                .filter(container -> container instanceof DirectoryContainer)
+                .count() > 7) {
+            // TODO: Start a thread for each folder
+        }
+
         size = 0;
         for (Container directory : childrenContainers) {
             directory.calculateSize();
