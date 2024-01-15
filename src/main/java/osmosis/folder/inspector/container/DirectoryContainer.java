@@ -1,41 +1,32 @@
 package osmosis.folder.inspector.container;
 
-import osmosis.folder.inspector.constants.Constant;
+import osmosis.folder.inspector.container.state.ChildrenContainersWrapper;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public class DirectoryContainer extends Container {
-    private final List<Container> childrenContainers;
-    private final File[] childrenFiles;
+    private final ChildrenContainersWrapper childrenContainersWrapper;
     private ChildContainerReadyListener childContainerReadyListener;
 
     public DirectoryContainer(File file, DirectoryContainer parent) {
         super(file, parent);
-        this.childrenFiles = Optional.ofNullable(file.listFiles()).orElse(Constant.EMPTY_FILES_ARRAY);
+        this.childrenContainersWrapper = new ChildrenContainersWrapper(file, this);
         this.childContainerReadyListener = null;
-        this.childrenContainers = new ArrayList<>();
     }
 
     @Override
     public void calculateSize() {
         size = 0;
-        if (childrenFiles != null) {
-            for (File child : childrenFiles) {
-                childrenContainers.add(ContainerFactory.createContainer(child, this));
-            }
-        }
+        List<Container> childrenContainers = getChildrenContainers();
 
         for (Container directory : List.copyOf(childrenContainers)) {
             directory.calculateSize();
             size += directory.getSize();
-            childrenContainers.sort(Comparator.comparingLong(Container::getSize));
-            Collections.reverse(childrenContainers);
+            childrenContainersWrapper.sortContainers();
             invokeListener();
         }
         ready = true;
@@ -56,14 +47,14 @@ public class DirectoryContainer extends Container {
     }
 
     public List<Container> getChildrenContainers() {
-        return childrenContainers;
+        return childrenContainersWrapper.getChildrenContainers();
     }
 
     public int getNumberOfChildren() {
-        return childrenFiles.length;
+        return childrenContainersWrapper.getNumberOfChildren();
     }
 
     public boolean isEmpty() {
-        return childrenFiles.length == 0;
+        return childrenContainersWrapper.isEmpty();
     }
 }
