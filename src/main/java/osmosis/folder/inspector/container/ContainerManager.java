@@ -4,6 +4,9 @@ public class ContainerManager {
     private static final ContainerManager INSTANCE = new ContainerManager();
     private DirectoryContainer currentContainer;
 
+    private ContainerManager() {
+    }
+
     public DirectoryContainer getCurrentContainer() {
         return currentContainer;
     }

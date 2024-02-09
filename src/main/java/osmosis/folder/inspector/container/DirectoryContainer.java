@@ -1,10 +1,18 @@
 package osmosis.folder.inspector.container;
 
+import osmosis.folder.inspector.calculation.AsyncCalculation;
+import osmosis.folder.inspector.calculation.CalculationMethod;
+import osmosis.folder.inspector.calculation.FutureWrapper;
+import osmosis.folder.inspector.calculation.SyncCalculation;
 import osmosis.folder.inspector.container.state.ChildrenContainersWrapper;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static osmosis.folder.inspector.constants.Constant.MIN_NUMBER_OF_DIRECTORIES;
 
 public class DirectoryContainer extends Container {
     private final ChildrenContainersWrapper childrenContainersWrapper;
@@ -19,23 +27,38 @@ public class DirectoryContainer extends Container {
     @Override
     public long calculateSize() {
         List<Container> childrenContainers = getChildrenContainers();
+        CalculationMethod calculationMethod = getCalculationMethod(childrenContainers);
 
-        // TODO: Calculate how many file children there are and sum them up
-        if (childrenContainers.stream()
-                .filter(container -> container instanceof DirectoryContainer)
-                .count() > 7) {
-            // TODO: Start a thread for each folder
-        }
-
-        size = 0;
-        for (Container directory : childrenContainers) {
-            directory.calculateSize();
-            size += directory.getSize();
-            childrenContainersWrapper.sortContainers();
-            invokeListener();
-        }
+        size = calculateSize(calculationMethod);
         ready = true;
         return size;
+    }
+
+    private long calculateSize(CalculationMethod calculationMethod) {
+        List<Container> childrenContainers = getChildrenContainers();
+        List<FutureWrapper<Long>> futures = childrenContainers.stream()
+                .map(calculationMethod::calculateSize)
+                .collect(Collectors.toList());
+        List<FutureWrapper<Long>> doneFutures = new ArrayList<>();
+        /*
+         TODO: Issue: parent tasks wait forever for child tasks that never get executed due to the thread pool being full
+          Test if wait() and notify() can be used here
+          Using while loop is very CPU intensive
+         */
+        while (!futures.isEmpty()) {
+            List<FutureWrapper<Long>> newDoneFutures = futures.stream()
+                    .filter(FutureWrapper::isDone)
+                    .collect(Collectors.toList());
+            if (!newDoneFutures.isEmpty()) {
+                childrenContainersWrapper.sortContainers();
+                invokeListener();
+            }
+            doneFutures.addAll(newDoneFutures);
+            futures.removeAll(doneFutures);
+        }
+        return doneFutures.stream()
+                .map(FutureWrapper::get)
+                .reduce(0L, Long::sum);
     }
 
     public void setChildContainerReadyListener(ChildContainerReadyListener childContainerReadyListener) {
@@ -62,5 +85,17 @@ public class DirectoryContainer extends Container {
 
     public boolean isEmpty() {
         return childrenContainersWrapper.isEmpty();
+    }
+
+    private static CalculationMethod getCalculationMethod(List<Container> childrenContainers) {
+        return calculateDirectoryChildrenCount(childrenContainers) >= MIN_NUMBER_OF_DIRECTORIES ?
+                new AsyncCalculation() :
+                new SyncCalculation();
+    }
+
+    private static long calculateDirectoryChildrenCount(List<Container> childrenContainers) {
+        return childrenContainers.stream()
+                .filter(container -> container instanceof DirectoryContainer)
+                .count();
     }
 }
