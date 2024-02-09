@@ -44,6 +44,7 @@ public class DirectoryContainer extends Container {
          TODO: Issue: parent tasks wait forever for child tasks that never get executed due to the thread pool being full
           Test if wait() and notify() can be used here
           Using while loop is very CPU intensive
+          Try the Semaphore thingie
          */
         while (!futures.isEmpty()) {
             List<FutureWrapper<Long>> newDoneFutures = futures.stream()
