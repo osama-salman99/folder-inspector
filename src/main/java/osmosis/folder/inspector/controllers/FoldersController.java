@@ -3,19 +3,24 @@ package osmosis.folder.inspector.controllers;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import osmosis.folder.inspector.calculation.DirectorySizeCalculator;
 import osmosis.folder.inspector.constants.Constant;
 import osmosis.folder.inspector.constants.ResourcePaths;
 import osmosis.folder.inspector.constants.UserMessages;
 import osmosis.folder.inspector.constants.providers.AlertProvider;
+import osmosis.folder.inspector.container.ChildContainerReadyListener;
 import osmosis.folder.inspector.container.Container;
 import osmosis.folder.inspector.container.ContainerManager;
-import osmosis.folder.inspector.container.ContainerReadyListener;
 import osmosis.folder.inspector.container.DirectoryContainer;
 import osmosis.folder.inspector.formatter.DigitalFormatter;
 import osmosis.folder.inspector.panes.ContainerPane;
@@ -24,9 +29,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class FoldersController extends Controller {
+public class FoldersController extends Controller implements ChildContainerReadyListener {
     private static final ContainerManager containerManager = ContainerManager.getInstance();
-    private final ContainerReadyListener containerReadyListener = () -> Platform.runLater(() -> showContainer(containerManager.getCurrentContainer()));
     public VBox foldersVBox;
     public Button backButton;
     public Text progressText;
@@ -42,15 +46,12 @@ public class FoldersController extends Controller {
         initializeAddressBar();
         DirectoryContainer container = containerManager.getCurrentContainer();
         showContainer(container);
+        startSizeCalculation(container);
     }
 
-    private void initializeAddressBar() {
-        addressBar.setText(containerManager.getCurrentContainer().getPath());
-    }
-
-    private void installTooltips() {
-        Tooltip.install(progressText, new Tooltip(UserMessages.ITEMS_CALCULATED));
-        Tooltip.install(copyAddressToClipboard, new Tooltip(UserMessages.COPY_ADDRESS_TO_CLIPBOARD));
+    @Override
+    public void onContainerReady() {
+        Platform.runLater(this::refreshContents);
     }
 
     @FXML
@@ -70,6 +71,19 @@ public class FoldersController extends Controller {
         confirmGoingToMainMenu(actionEvent);
     }
 
+    private void initializeAddressBar() {
+        addressBar.setText(containerManager.getCurrentContainer().getPath());
+    }
+
+    private void installTooltips() {
+        Tooltip.install(progressText, new Tooltip(UserMessages.ITEMS_CALCULATED));
+        Tooltip.install(copyAddressToClipboard, new Tooltip(UserMessages.COPY_ADDRESS_TO_CLIPBOARD));
+    }
+
+    private void startSizeCalculation(DirectoryContainer container) {
+        DirectorySizeCalculator.getInstance().calculate(container);
+    }
+
     private void confirmGoingToMainMenu(ActionEvent actionEvent) {
         AlertProvider.createBackToMainMenuAlert()
                 .showAndWait()
@@ -83,20 +97,22 @@ public class FoldersController extends Controller {
     }
 
     private void showContainer(DirectoryContainer container) {
-        addressBar.requestFocus();
+        containerManager.getCurrentContainer().clearChildContainerReadyListener();
         containerManager.setCurrentContainer(container);
+        container.setChildContainerReadyListener(this);
+        addressBar.requestFocus();
         addressBar.setText(container.getPath());
-        container.setContainerReadyListener(this.containerReadyListener);
-        if (!container.isStarted()) {
-            Thread calculatorThread = new Thread(container::calculateSize);
-            calculatorThread.setDaemon(true);
-            calculatorThread.start();
-        } else if (container.isReady()) {
+        folderIsEmptyText.setVisible(container.isEmpty());
+        refreshContents();
+    }
+
+    private void refreshContents() {
+        foldersVBox.getChildren().clear();
+        DirectoryContainer container = containerManager.getCurrentContainer();
+        if (container.isReady()) {
             directorySizeText.setText(DigitalFormatter.formatSize(container.getSize()));
         }
-        foldersVBox.getChildren().clear();
-        folderIsEmptyText.setVisible(container.isEmpty());
-        long ready = List.copyOf(container.getChildren())
+        long ready = List.copyOf(container.getChildrenContainers())
                 .stream()
                 .peek(this::addContainerPane)
                 .filter(Container::isReady)

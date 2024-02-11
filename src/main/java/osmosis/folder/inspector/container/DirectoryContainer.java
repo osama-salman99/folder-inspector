@@ -1,53 +1,55 @@
 package osmosis.folder.inspector.container;
 
-import osmosis.folder.inspector.constants.Constant;
+import osmosis.folder.inspector.container.state.ChildrenContainersWrapper;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 public class DirectoryContainer extends Container {
-    private final List<Container> children;
-    private final File[] childrenFiles;
+    private final ChildrenContainersWrapper childrenContainersWrapper;
+    private ChildContainerReadyListener childContainerReadyListener;
 
     public DirectoryContainer(File file, DirectoryContainer parent) {
         super(file, parent);
-        this.childrenFiles = Optional.ofNullable(file.listFiles()).orElse(Constant.EMPTY_FILES_ARRAY);
-        this.children = new ArrayList<>();
+        this.childrenContainersWrapper = new ChildrenContainersWrapper(file, this);
+        this.childContainerReadyListener = null;
     }
 
-    @Override
-    public void calculateSize() {
-        started = true;
-        size = 0;
-        if (childrenFiles != null) {
-            for (File child : childrenFiles) {
-                children.add(ContainerFactory.createContainer(child, this));
-            }
-        }
-
-        for (Container directory : List.copyOf(children)) {
-            directory.calculateSize();
-            size += directory.getSize();
-            children.sort(Comparator.comparingLong(Container::getSize));
-            Collections.reverse(children);
-            invokeListener();
-        }
-        ready = true;
+    public void setChildContainerReadyListener(ChildContainerReadyListener childContainerReadyListener) {
+        this.childContainerReadyListener = childContainerReadyListener;
     }
 
-    public List<Container> getChildren() {
-        return children;
+    public void clearChildContainerReadyListener() {
+        this.childContainerReadyListener = null;
+    }
+
+    public void invokeListener() {
+        if (hasListener()) {
+            childrenContainersWrapper.sortContainers();
+            childContainerReadyListener.onContainerReady();
+        } else if (hasParentContainer() && parent.hasListener()) {
+            parent.invokeListener();
+        }
+    }
+
+    private boolean hasListener() {
+        return Objects.nonNull(childContainerReadyListener);
+    }
+
+    public List<Container> getChildrenContainers() {
+        return childrenContainersWrapper.getChildrenContainers();
     }
 
     public int getNumberOfChildren() {
-        return childrenFiles.length;
+        return childrenContainersWrapper.getNumberOfChildren();
     }
 
     public boolean isEmpty() {
-        return childrenFiles.length == 0;
+        return childrenContainersWrapper.isEmpty();
+    }
+
+    public void setSize(long size) {
+        this.size = size;
     }
 }
