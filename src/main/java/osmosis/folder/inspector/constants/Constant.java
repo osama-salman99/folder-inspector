@@ -13,5 +13,4 @@ public class Constant {
     public static final String FOLDER_INSPECTOR = "Folder Inspector";
     public static final String FILE_SEPARATOR = FileSystems.getDefault().getSeparator();
     public static final Color ACCENT_COLOR = Color.rgb(190, 211, 231);
-
 }
