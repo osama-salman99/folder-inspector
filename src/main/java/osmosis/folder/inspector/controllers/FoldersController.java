@@ -13,6 +13,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import osmosis.folder.inspector.calculation.DirectorySizeCalculator;
 import osmosis.folder.inspector.constants.Constant;
 import osmosis.folder.inspector.constants.ResourcePaths;
 import osmosis.folder.inspector.constants.UserMessages;
@@ -27,6 +28,7 @@ import osmosis.folder.inspector.panes.ContainerPane;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ForkJoinPool;
 
 public class FoldersController extends Controller implements ChildContainerReadyListener {
     private static final ContainerManager containerManager = ContainerManager.getInstance();
@@ -80,9 +82,8 @@ public class FoldersController extends Controller implements ChildContainerReady
     }
 
     private void startSizeCalculation(DirectoryContainer container) {
-        Thread calculatorThread = new Thread(container::calculateSize);
-        calculatorThread.setDaemon(true);
-        calculatorThread.start();
+        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        forkJoinPool.submit(new DirectorySizeCalculator(container));
     }
 
     private void confirmGoingToMainMenu(ActionEvent actionEvent) {

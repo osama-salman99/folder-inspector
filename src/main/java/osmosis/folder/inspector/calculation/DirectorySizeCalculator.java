@@ -1,26 +1,39 @@
 package osmosis.folder.inspector.calculation;
 
-import osmosis.folder.inspector.constants.Constant;
+import osmosis.folder.inspector.container.Container;
+import osmosis.folder.inspector.container.DirectoryContainer;
 
-import java.io.File;
-import java.util.Optional;
-import java.util.concurrent.Callable;
+import java.util.List;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.RecursiveTask;
 
-public class DirectorySizeCalculator implements Callable<Long> {
-    private final File file;
+public class DirectorySizeCalculator extends RecursiveTask<Long> {
 
-    public DirectorySizeCalculator(File file) {
-        this.file = file;
+    private final DirectoryContainer directoryContainer;
+
+    public DirectorySizeCalculator(DirectoryContainer directoryContainer) {
+        this.directoryContainer = directoryContainer;
     }
 
     @Override
-    public Long call() {
-        // TODO: Receive and return list of containers? Hmmmmm
-        File[] files = Optional.ofNullable(file.listFiles()).orElse(Constant.EMPTY_FILES_ARRAY);
-        if (files.length == 0) {
-            return 0L;
-        }
-
-        return null;
+    protected Long compute() {
+        List<Container> childrenContainers = directoryContainer.getChildrenContainers();
+        long size = childrenContainers.stream()
+                .filter(container -> container instanceof DirectoryContainer)
+                .map(container -> new DirectorySizeCalculator((DirectoryContainer) container))
+                .map(ForkJoinTask::fork)
+                .mapToLong(task -> {
+                    long subSize = task.join();
+                    directoryContainer.invokeListener();
+                    return subSize;
+                })
+                .sum();
+        size += childrenContainers.stream()
+                .filter(container -> !(container instanceof DirectoryContainer))
+                .mapToLong(Container::getSize)
+                .sum();
+        directoryContainer.setSize(size);
+        directoryContainer.invokeListener();
+        return size;
     }
 }

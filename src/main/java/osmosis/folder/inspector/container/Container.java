@@ -33,12 +33,10 @@ public abstract class Container {
     }
 
     public boolean isReady() {
-        return ready;
+        return size != Long.MIN_VALUE;
     }
 
     public boolean hasParentContainer() {
         return Objects.nonNull(parent);
     }
-
-    public abstract long calculateSize();
 }
