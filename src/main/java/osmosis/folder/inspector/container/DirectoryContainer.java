@@ -25,10 +25,16 @@ public class DirectoryContainer extends Container {
     }
 
     public void invokeListener() {
-        childrenContainersWrapper.sortContainers();
-        if (Objects.nonNull(childContainerReadyListener)) {
+        if (hasListener()) {
+            childrenContainersWrapper.sortContainers();
             childContainerReadyListener.onContainerReady();
+        } else if (hasParentContainer() && parent.hasListener()) {
+            parent.invokeListener();
         }
+    }
+
+    private boolean hasListener() {
+        return Objects.nonNull(childContainerReadyListener);
     }
 
     public List<Container> getChildrenContainers() {

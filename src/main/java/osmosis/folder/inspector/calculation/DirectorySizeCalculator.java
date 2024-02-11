@@ -22,11 +22,7 @@ public class DirectorySizeCalculator extends RecursiveTask<Long> {
                 .filter(container -> container instanceof DirectoryContainer)
                 .map(container -> new DirectorySizeCalculator((DirectoryContainer) container))
                 .map(ForkJoinTask::fork)
-                .mapToLong(task -> {
-                    long subSize = task.join();
-                    directoryContainer.invokeListener();
-                    return subSize;
-                })
+                .mapToLong(ForkJoinTask::join)
                 .sum();
         size += childrenContainers.stream()
                 .filter(container -> !(container instanceof DirectoryContainer))
