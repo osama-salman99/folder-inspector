@@ -28,7 +28,6 @@ import osmosis.folder.inspector.panes.ContainerPane;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.ForkJoinPool;
 
 public class FoldersController extends Controller implements ChildContainerReadyListener {
     private static final ContainerManager containerManager = ContainerManager.getInstance();
@@ -82,8 +81,7 @@ public class FoldersController extends Controller implements ChildContainerReady
     }
 
     private void startSizeCalculation(DirectoryContainer container) {
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
-        forkJoinPool.submit(new DirectorySizeCalculator(container));
+        DirectorySizeCalculator.getInstance().calculate(container);
     }
 
     private void confirmGoingToMainMenu(ActionEvent actionEvent) {

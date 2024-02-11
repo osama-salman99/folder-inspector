@@ -1,35 +1,21 @@
 package osmosis.folder.inspector.calculation;
 
-import osmosis.folder.inspector.container.Container;
 import osmosis.folder.inspector.container.DirectoryContainer;
 
-import java.util.List;
-import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.ForkJoinPool;
 
-public class DirectorySizeCalculator extends RecursiveTask<Long> {
+public class DirectorySizeCalculator {
+    private static final ForkJoinPool FORK_JOIN_POOL = new ForkJoinPool();
+    private static final DirectorySizeCalculator INSTANCE = new DirectorySizeCalculator();
 
-    private final DirectoryContainer directoryContainer;
-
-    public DirectorySizeCalculator(DirectoryContainer directoryContainer) {
-        this.directoryContainer = directoryContainer;
+    private DirectorySizeCalculator() {
     }
 
-    @Override
-    protected Long compute() {
-        List<Container> childrenContainers = directoryContainer.getChildrenContainers();
-        long size = childrenContainers.stream()
-                .filter(container -> container instanceof DirectoryContainer)
-                .map(container -> new DirectorySizeCalculator((DirectoryContainer) container))
-                .map(ForkJoinTask::fork)
-                .mapToLong(ForkJoinTask::join)
-                .sum();
-        size += childrenContainers.stream()
-                .filter(container -> !(container instanceof DirectoryContainer))
-                .mapToLong(Container::getSize)
-                .sum();
-        directoryContainer.setSize(size);
-        directoryContainer.invokeListener();
-        return size;
+    public void calculate(DirectoryContainer container) {
+        FORK_JOIN_POOL.submit(new DirectorySizeCalculationTask(container));
+    }
+
+    public static DirectorySizeCalculator getInstance() {
+        return INSTANCE;
     }
 }
