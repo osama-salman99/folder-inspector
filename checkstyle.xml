@@ -32,9 +32,7 @@
         <module name="PackageName"/>
         <module name="RequireThis"/>
         <module name="OperatorWrap"/>
-        <module name="IllegalCatch"/>
         <module name="NoCodeInFile"/>
-        <module name="ConstantName"/>
         <module name="NestedIfDepth"/>
         <module name="ModifierOrder"/>
         <module name="UnusedImports"/>
