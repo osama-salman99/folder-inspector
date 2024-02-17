@@ -31,10 +31,7 @@ public class MainController extends Controller {
     public void inspect(ActionEvent actionEvent) {
         showProgressIndicator();
         informationBox.setDisable(true);
-        String path = pathInputField.getText();
-        if (path.endsWith(Constant.COLON)) {
-            path += Constant.FILE_SEPARATOR;
-        }
+        String path = getPath();
         File file = new File(path);
         try {
             validateFile(file);
@@ -44,14 +41,22 @@ public class MainController extends Controller {
             hideProgressIndicator();
             return;
         }
-        Thread calculatorThread = new Thread(() -> {
-            containerManager.setCurrentContainer(ContainerFactory.createDirectoryContainer(file));
-            informationBox.setDisable(false);
-            hideProgressIndicator();
-            setScene(actionEvent, ResourcePaths.FOLDERS_FXML);
-        });
-        calculatorThread.setDaemon(true);
-        calculatorThread.start();
+        goToFolderView(actionEvent, file);
+    }
+
+    private void goToFolderView(ActionEvent actionEvent, File file) {
+        containerManager.setCurrentContainer(ContainerFactory.createDirectoryContainer(file));
+        informationBox.setDisable(false);
+        hideProgressIndicator();
+        setScene(actionEvent, ResourcePaths.FOLDERS_FXML);
+    }
+
+    private String getPath() {
+        String path = pathInputField.getText();
+        if (path.endsWith(Constant.COLON)) {
+            path += Constant.FILE_SEPARATOR;
+        }
+        return path;
     }
 
     private void validateFile(File file) throws InvalidDirectoryException {

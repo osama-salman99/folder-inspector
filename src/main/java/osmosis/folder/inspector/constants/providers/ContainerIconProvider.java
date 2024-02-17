@@ -11,10 +11,15 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ContainerIconProvider {
-    private static final Map<Class<? extends Container>, Image> iconsMap = new HashMap<>() {{
-        put(DirectoryContainer.class, new Image(Objects.requireNonNull(FileContainer.class.getResource(ResourcePaths.FOLDER_ICON)).toExternalForm()));
-        put(FileContainer.class, new Image(Objects.requireNonNull(FileContainer.class.getResource(ResourcePaths.FILE_ICON)).toExternalForm()));
-    }};
+    private static final Map<Class<? extends Container>, Image> iconsMap = new HashMap<>() {
+        {
+            put(DirectoryContainer.class, new Image(Objects.requireNonNull(FileContainer.class.getResource(ResourcePaths.FOLDER_ICON)).toExternalForm()));
+            put(FileContainer.class, new Image(Objects.requireNonNull(FileContainer.class.getResource(ResourcePaths.FILE_ICON)).toExternalForm()));
+        }
+    };
+
+    private ContainerIconProvider() {
+    }
 
     public static Image getIcon(Container container) {
         return iconsMap.get(container.getClass());

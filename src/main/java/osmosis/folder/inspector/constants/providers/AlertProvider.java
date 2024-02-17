@@ -5,6 +5,9 @@ import javafx.scene.control.ButtonType;
 import osmosis.folder.inspector.constants.UserMessages;
 
 public class AlertProvider {
+    private AlertProvider() {
+    }
+
     public static Alert createBackToMainMenuAlert() {
         return new Alert(
                 Alert.AlertType.CONFIRMATION,
