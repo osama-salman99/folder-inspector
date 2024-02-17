@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ContainerIconProvider {
-    private static final Map<Class<? extends Container>, Image> ICONS_MAP = new HashMap<>() {
+    private static final Map<Class<? extends Container>, Image> iconsMap = new HashMap<>() {
         {
             put(DirectoryContainer.class, new Image(Objects.requireNonNull(FileContainer.class.getResource(ResourcePaths.FOLDER_ICON)).toExternalForm()));
             put(FileContainer.class, new Image(Objects.requireNonNull(FileContainer.class.getResource(ResourcePaths.FILE_ICON)).toExternalForm()));
@@ -22,6 +22,6 @@ public class ContainerIconProvider {
     }
 
     public static Image getIcon(Container container) {
-        return ICONS_MAP.get(container.getClass());
+        return iconsMap.get(container.getClass());
     }
 }
