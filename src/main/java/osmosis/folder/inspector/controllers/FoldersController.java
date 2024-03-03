@@ -2,6 +2,7 @@ package osmosis.folder.inspector.controllers;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -19,6 +20,7 @@ import osmosis.folder.inspector.constants.ResourcePaths;
 import osmosis.folder.inspector.constants.UserMessages;
 import osmosis.folder.inspector.constants.providers.AlertProvider;
 import osmosis.folder.inspector.container.ChildContainerReadyListener;
+import osmosis.folder.inspector.container.ChildrenContainersStatistics;
 import osmosis.folder.inspector.container.Container;
 import osmosis.folder.inspector.container.ContainerManager;
 import osmosis.folder.inspector.container.DirectoryContainer;
@@ -26,7 +28,6 @@ import osmosis.folder.inspector.formatter.DigitalFormatter;
 import osmosis.folder.inspector.panes.ContainerPane;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class FoldersController extends Controller implements ChildContainerReadyListener {
@@ -112,12 +113,9 @@ public class FoldersController extends Controller implements ChildContainerReady
         if (container.isReady()) {
             directorySizeText.setText(DigitalFormatter.formatSize(container.getSize()));
         }
-        long ready = List.copyOf(container.getChildrenContainers())
-                .stream()
-                .peek(this::addContainerPane)
-                .filter(Container::isReady)
-                .count();
-        updateProgress(ready, container.getNumberOfChildren());
+        ChildrenContainersStatistics statistics = ChildrenContainersStatistics.calculate(container.getChildrenContainers());
+        statistics.getChildrenContainers().forEach(this::addContainerPane);
+        updateProgress(statistics.getNumberOfReadyContainers(), statistics.getNumberOfChildren());
     }
 
     private void updateProgress(long completed, long all) {
@@ -130,8 +128,16 @@ public class FoldersController extends Controller implements ChildContainerReady
     private void addContainerPane(Container container) {
         ContainerPane containerPane = new ContainerPane(container);
         if (container instanceof DirectoryContainer) {
-            containerPane.addEventFilter(MouseEvent.MOUSE_PRESSED, mouseEvent -> showContainer((DirectoryContainer) containerPane.getContainer()));
+            addEventHandler(containerPane);
         }
         foldersVBox.getChildren().add(containerPane);
+    }
+
+    private void addEventHandler(ContainerPane containerPane) {
+        containerPane.addEventHandler(MouseEvent.MOUSE_PRESSED, createMouseEventEventHandler(containerPane));
+    }
+
+    private EventHandler<MouseEvent> createMouseEventEventHandler(ContainerPane containerPane) {
+        return mouseEvent -> showContainer((DirectoryContainer) containerPane.getContainer());
     }
 }
