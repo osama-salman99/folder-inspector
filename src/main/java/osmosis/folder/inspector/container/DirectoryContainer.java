@@ -26,7 +26,6 @@ public class DirectoryContainer extends Container {
 
     public void invokeListener() {
         if (hasListener()) {
-            childrenContainersWrapper.sortContainers();
             childContainerReadyListener.onContainerReady();
         } else if (hasParentContainer() && parent.hasListener()) {
             parent.invokeListener();
@@ -39,10 +38,6 @@ public class DirectoryContainer extends Container {
 
     public List<Container> getChildrenContainers() {
         return childrenContainersWrapper.getChildrenContainers();
-    }
-
-    public int getNumberOfChildren() {
-        return childrenContainersWrapper.getNumberOfChildren();
     }
 
     public boolean isEmpty() {

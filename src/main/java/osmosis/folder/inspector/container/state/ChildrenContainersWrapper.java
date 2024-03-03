@@ -7,8 +7,6 @@ import osmosis.folder.inspector.container.DirectoryContainer;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +14,7 @@ import java.util.stream.Collectors;
 public class ChildrenContainersWrapper {
     private final File file;
     private final DirectoryContainer directoryContainer;
+    private State state = new EmptyState();
     private List<Container> containers;
 
     public ChildrenContainersWrapper(File file, DirectoryContainer directoryContainer) {
@@ -24,24 +23,32 @@ public class ChildrenContainersWrapper {
     }
 
     public List<Container> getChildrenContainers() {
-        if (containers == null) {
-            containers = Arrays.stream(Optional.ofNullable(file.listFiles()).orElse(Constant.EMPTY_FILES_ARRAY))
-                    .map(child -> ContainerFactory.createContainer(child, directoryContainer))
-                    .collect(Collectors.toList());
-        }
-        return List.copyOf(containers);
+        return state.getChildrenContainers();
     }
 
     public boolean isEmpty() {
         return getChildrenContainers().isEmpty();
     }
 
-    public int getNumberOfChildren() {
-        return getChildrenContainers().size();
+    private interface State {
+        List<Container> getChildrenContainers();
     }
 
-    public void sortContainers() {
-        containers.sort(Comparator.comparingLong(Container::getSize));
-        Collections.reverse(containers);
+    private class EmptyState implements State {
+        @Override
+        public List<Container> getChildrenContainers() {
+            containers = Arrays.stream(Optional.ofNullable(file.listFiles()).orElse(Constant.EMPTY_FILES_ARRAY))
+                    .map(child -> ContainerFactory.createContainer(child, directoryContainer))
+                    .collect(Collectors.toList());
+            state = new InitializedState();
+            return state.getChildrenContainers();
+        }
+    }
+
+    private class InitializedState implements State {
+        @Override
+        public List<Container> getChildrenContainers() {
+            return List.copyOf(containers);
+        }
     }
 }

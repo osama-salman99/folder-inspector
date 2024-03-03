@@ -3,7 +3,7 @@ package osmosis.folder.inspector.container;
 import java.io.File;
 import java.util.Objects;
 
-public abstract class Container {
+public abstract class Container implements Comparable<Container> {
     protected final File file;
     protected final DirectoryContainer parent;
     protected long size;
@@ -38,5 +38,10 @@ public abstract class Container {
 
     public boolean hasParentContainer() {
         return Objects.nonNull(parent);
+    }
+
+    @Override
+    public int compareTo(Container that) {
+        return Long.compare(this.size, that.size);
     }
 }
