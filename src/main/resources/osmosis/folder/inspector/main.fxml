@@ -5,7 +5,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-<BorderPane prefHeight="800.0" prefWidth="1000.0" xmlns="https://javafx.com/javafx"
+<BorderPane xmlns="https://javafx.com/javafx"
             xmlns:fx="https://javafx.com/fxml/1"
             fx:controller="osmosis.folder.inspector.controllers.MainController">
     <center>
