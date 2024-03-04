@@ -1,6 +1,7 @@
 package osmosis.folder.inspector.container;
 
 import java.io.File;
+import java.nio.file.Files;
 
 public class ContainerFactory {
 
@@ -12,6 +13,9 @@ public class ContainerFactory {
     }
 
     public static Container createContainer(File file, DirectoryContainer parent) {
+        if (Files.isSymbolicLink(file.toPath())) {
+            return new SymbolicLinkContainer(file, parent);
+        }
         if (file.isDirectory()) {
             return new DirectoryContainer(file, parent);
         }

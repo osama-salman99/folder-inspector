@@ -45,6 +45,6 @@ public class DirectoryContainer extends Container {
     }
 
     public void setSize(long size) {
-        this.size = size;
+        super.setSize(size);
     }
 }

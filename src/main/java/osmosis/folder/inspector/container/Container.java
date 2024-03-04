@@ -6,13 +6,11 @@ import java.util.Objects;
 public abstract class Container implements Comparable<Container> {
     protected final File file;
     protected final DirectoryContainer parent;
-    protected long size;
-    protected boolean ready;
+    private long size;
 
     public Container(File file, DirectoryContainer parent) {
         this.parent = parent;
         this.file = file;
-        this.ready = false;
         this.size = Long.MIN_VALUE;
     }
 
@@ -26,6 +24,10 @@ public abstract class Container implements Comparable<Container> {
 
     public long getSize() {
         return size;
+    }
+
+    protected void setSize(long size) {
+        this.size = size;
     }
 
     public String getName() {

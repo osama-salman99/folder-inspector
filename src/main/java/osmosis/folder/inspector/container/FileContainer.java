@@ -5,6 +5,6 @@ import java.io.File;
 public class FileContainer extends Container {
     public FileContainer(File file, DirectoryContainer parent) {
         super(file, parent);
-        this.size = file.length();
+        setSize(file.length());
     }
 }
