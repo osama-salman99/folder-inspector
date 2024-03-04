@@ -12,8 +12,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-<BorderPane prefHeight="800.0" prefWidth="1000.0"
-            xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="osmosis.folder.inspector.controllers.FoldersController">
     <top>
         <HBox alignment="CENTER">
