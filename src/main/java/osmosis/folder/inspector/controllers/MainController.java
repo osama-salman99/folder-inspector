@@ -3,8 +3,10 @@ package osmosis.folder.inspector.controllers;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import osmosis.folder.inspector.constants.Constant;
 import osmosis.folder.inspector.constants.ErrorMessages;
@@ -19,34 +21,51 @@ import java.util.ResourceBundle;
 
 public class MainController extends Controller {
     private static final ContainerManager containerManager = ContainerManager.getInstance();
-    public VBox informationBox;
+    public VBox mainBox;
+    public Button inspectButton;
     public TextField pathInputField;
     public ProgressIndicator progressIndicator;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> pathInputField.requestFocus());
+        pathInputField.addEventHandler(KeyEvent.KEY_TYPED, this::greyOutInspectButton);
+    }
+
+    private void greyOutInspectButton(KeyEvent keyEvent) {
+        Platform.runLater(() -> inspectButton.setDisable(pathInputField.getText().isBlank()));
     }
 
     public void inspect(ActionEvent actionEvent) {
         showProgressIndicator();
-        informationBox.setDisable(true);
-        String path = getPath();
-        File file = new File(path);
+        mainBox.setDisable(true);
+        File file;
         try {
-            validateFile(file);
+            file = getFile();
         } catch (InvalidDirectoryException exception) {
-            showErrorAlert(exception.getMessage());
-            informationBox.setDisable(false);
-            hideProgressIndicator();
+            showAlert(exception.getMessage());
             return;
         }
         goToFolderView(actionEvent, file);
     }
 
+    private File getFile() throws InvalidDirectoryException {
+        String path = getPath();
+        validatePath(path);
+        File file = new File(path);
+        validateFile(file);
+        return file;
+    }
+
+    private void showAlert(String message) {
+        showErrorAlert(message);
+        mainBox.setDisable(false);
+        hideProgressIndicator();
+    }
+
     private void goToFolderView(ActionEvent actionEvent, File file) {
         containerManager.setCurrentContainer(ContainerFactory.createDirectoryContainer(file));
-        informationBox.setDisable(false);
+        mainBox.setDisable(false);
         hideProgressIndicator();
         setScene(actionEvent, ResourcePaths.FOLDERS_FXML);
     }
@@ -57,6 +76,12 @@ public class MainController extends Controller {
             path += Constant.FILE_SEPARATOR;
         }
         return path;
+    }
+
+    private void validatePath(String path) throws InvalidDirectoryException {
+        if (path.isBlank()) {
+            throw new InvalidDirectoryException(ErrorMessages.PATH_CANNOT_BE_EMPTY);
+        }
     }
 
     private void validateFile(File file) throws InvalidDirectoryException {

@@ -11,7 +11,7 @@
     <center>
         <VBox alignment="CENTER"
               spacing="10">
-            <VBox fx:id="informationBox"
+            <VBox fx:id="mainBox"
                   alignment="CENTER"
                   spacing="10">
                 <TextField fx:id="pathInputField"
@@ -19,7 +19,9 @@
                            maxWidth="400"
                            promptText="C:\Program Files"
                            onAction="#onEnter"/>
-                <Button text="Inspect"
+                <Button fx:id="inspectButton"
+                        text="Inspect"
+                        disable="true"
                         onAction="#inspect"/>
             </VBox>
             <ProgressIndicator fx:id="progressIndicator"
