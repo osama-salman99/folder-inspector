@@ -5,11 +5,11 @@ import java.io.File;
 public class SymbolicLinkContainer extends Container {
     public SymbolicLinkContainer(File file, DirectoryContainer parent) {
         super(file, parent);
-        this.size = file.length();
+        setSize(0L);
     }
 
     @Override
     public String getName() {
-        return super.getName() + " (Symbolic Link)";
+        return "(Symbolic Link) " + super.getName();
     }
 }
