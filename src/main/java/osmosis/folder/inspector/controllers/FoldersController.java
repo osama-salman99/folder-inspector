@@ -31,7 +31,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class FoldersController extends Controller implements ChildContainerReadyListener {
-    private static final ContainerManager containerManager = ContainerManager.getInstance();
     public VBox foldersVBox;
     public Button backButton;
     public Text progressText;
@@ -45,9 +44,12 @@ public class FoldersController extends Controller implements ChildContainerReady
     public void initialize(URL location, ResourceBundle resources) {
         installTooltips();
         initializeAddressBar();
-        DirectoryContainer container = containerManager.getCurrentContainer();
-        showContainer(container);
-        startSizeCalculation(container);
+        initializeParentContainer();
+    }
+
+    private void initializeParentContainer() {
+        showContainer(containerManager.getCurrentContainer());
+        startSizeCalculation();
     }
 
     @Override
@@ -81,8 +83,8 @@ public class FoldersController extends Controller implements ChildContainerReady
         Tooltip.install(copyAddressToClipboard, new Tooltip(UserMessages.COPY_ADDRESS_TO_CLIPBOARD));
     }
 
-    private void startSizeCalculation(DirectoryContainer container) {
-        DirectorySizeCalculator.getInstance().calculate(container);
+    private void startSizeCalculation() {
+        DirectorySizeCalculator.getInstance().calculate(containerManager.getCurrentContainer());
     }
 
     private void confirmGoingToMainMenu(ActionEvent actionEvent) {

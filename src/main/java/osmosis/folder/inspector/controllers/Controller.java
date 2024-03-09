@@ -10,10 +10,15 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import osmosis.folder.inspector.constants.ErrorMessages;
 import osmosis.folder.inspector.constants.providers.ResourcePathProvider;
+import osmosis.folder.inspector.container.ContainerManager;
+import osmosis.folder.inspector.controllers.data.ControllersData;
 
 import java.util.Objects;
 
 public abstract class Controller implements Initializable {
+    protected static final ContainerManager containerManager = ContainerManager.getInstance();
+    protected static final ControllersData data = ControllersData.getInstance();
+
     protected void setScene(ActionEvent actionEvent, String resourceName) {
         setSceneAsync(getStage(actionEvent), resourceName);
     }
