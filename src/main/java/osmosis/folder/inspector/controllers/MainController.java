@@ -12,7 +12,6 @@ import osmosis.folder.inspector.constants.Constant;
 import osmosis.folder.inspector.constants.ErrorMessages;
 import osmosis.folder.inspector.constants.ResourcePaths;
 import osmosis.folder.inspector.container.ContainerFactory;
-import osmosis.folder.inspector.container.ContainerManager;
 import osmosis.folder.inspector.exceptions.InvalidDirectoryException;
 
 import java.io.File;
@@ -20,7 +19,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainController extends Controller {
-    private static final ContainerManager containerManager = ContainerManager.getInstance();
     public VBox mainBox;
     public Button inspectButton;
     public TextField pathInputField;
@@ -28,11 +26,17 @@ public class MainController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Platform.runLater(() -> pathInputField.requestFocus());
-        pathInputField.addEventHandler(KeyEvent.KEY_TYPED, this::greyOutInspectButton);
+        Platform.runLater(this::initializePathInputField);
     }
 
-    private void greyOutInspectButton(KeyEvent keyEvent) {
+    private void initializePathInputField() {
+        pathInputField.requestFocus();
+        pathInputField.addEventHandler(KeyEvent.KEY_TYPED, keyEvent -> greyOutInspectButton());
+        data.getMainPath().ifPresent(pathInputField::setText);
+        greyOutInspectButton();
+    }
+
+    private void greyOutInspectButton() {
         Platform.runLater(() -> inspectButton.setDisable(pathInputField.getText().isBlank()));
     }
 
@@ -64,6 +68,7 @@ public class MainController extends Controller {
     }
 
     private void goToFolderView(ActionEvent actionEvent, File file) {
+        data.setMainPath(file.getAbsolutePath());
         containerManager.setCurrentContainer(ContainerFactory.createDirectoryContainer(file));
         mainBox.setDisable(false);
         hideProgressIndicator();
