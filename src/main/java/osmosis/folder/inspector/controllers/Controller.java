@@ -16,8 +16,8 @@ import osmosis.folder.inspector.controllers.data.ControllersData;
 import java.util.Objects;
 
 public abstract class Controller implements Initializable {
-    protected static final ContainerManager containerManager = ContainerManager.getInstance();
     protected static final ControllersData data = ControllersData.getInstance();
+    protected static final ContainerManager containerManager = ContainerManager.getInstance();
 
     protected void setScene(ActionEvent actionEvent, String resourceName) {
         setSceneAsync(getStage(actionEvent), resourceName);
