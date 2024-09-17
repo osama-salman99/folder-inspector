@@ -15,6 +15,6 @@ jobs:
       - name: "JDK set-up"
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
       - run: mvn clean verify
