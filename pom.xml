@@ -10,10 +10,13 @@
     <name>folder-inspector</name>
 
     <properties>
+        <!-- Java Version -->
+        <java.version>21</java.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependencies Versions -->
-        <org.openjfx-version>22.0.2</org.openjfx-version>
+        <org.openjfx-version>23</org.openjfx-version>
         <org.junit.jupiter-version>5.11.0</org.junit.jupiter-version>
 
         <!-- Plugins Versions -->
@@ -85,8 +88,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin-version}</version>
                     <configuration>
-                        <source>11</source>
-                        <target>11</target>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
                     </configuration>
                 </plugin>
                 <plugin>
