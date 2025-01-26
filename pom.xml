@@ -16,7 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependencies Versions -->
-        <org.openjfx-version>23</org.openjfx-version>
+        <org.openjfx-version>25-ea+1</org.openjfx-version>
         <org.junit.jupiter-version>5.11.4</org.junit.jupiter-version>
 
         <!-- Plugins Versions -->
