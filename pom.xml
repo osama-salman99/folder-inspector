@@ -17,7 +17,7 @@
 
         <!-- Dependencies Versions -->
         <org.openjfx-version>23</org.openjfx-version>
-        <org.junit.jupiter-version>5.12.2</org.junit.jupiter-version>
+        <org.junit.jupiter-version>5.13.0</org.junit.jupiter-version>
 
         <!-- Plugins Versions -->
         <maven-shade-plugin-version>3.6.0</maven-shade-plugin-version>
