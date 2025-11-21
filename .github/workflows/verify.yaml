@@ -11,7 +11,7 @@ jobs:
     name: Verify Code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: "JDK set-up"
         uses: actions/setup-java@v5
         with:
