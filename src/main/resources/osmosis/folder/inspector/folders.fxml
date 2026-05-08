@@ -20,6 +20,21 @@
             <padding>
                 <Insets bottom="10" left="10" right="10" top="15"/>
             </padding>
+            <Button fx:id="rootButton"
+                    focusTraversable="false"
+                    maxWidth="20"
+                    maxHeight="20"
+                    onAction="#goToRoot">
+                <graphic>
+                    <ImageView fitHeight="20"
+                               fitWidth="20">
+                        <Image url="@../../icons/home_icon.png"/>
+                    </ImageView>
+                </graphic>
+                <HBox.margin>
+                    <Insets right="5"/>
+                </HBox.margin>
+            </Button>
             <TextField fx:id="addressBar"
                        minHeight="30"
                        prefHeight="30"
@@ -58,16 +73,6 @@
                 <HBox alignment="BOTTOM_LEFT">
                     <Button fx:id="backButton" focusTraversable="false" onAction="#goBack"
                             text="Back">
-                        <HBox.margin>
-                            <Insets>
-                                <top>5</top>
-                                <left>5</left>
-                                <bottom>5</bottom>
-                            </Insets>
-                        </HBox.margin>
-                    </Button>
-                    <Button fx:id="rootButton" focusTraversable="false" onAction="#goToRoot"
-                            text="Root">
                         <HBox.margin>
                             <Insets>
                                 <top>5</top>
