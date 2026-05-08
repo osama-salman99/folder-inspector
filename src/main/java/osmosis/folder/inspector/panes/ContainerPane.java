@@ -3,7 +3,9 @@ package osmosis.folder.inspector.panes;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -18,6 +20,7 @@ import osmosis.folder.inspector.formatter.DigitalFormatter;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static osmosis.folder.inspector.constants.Constant.ICON_SIZE;
+import static osmosis.folder.inspector.constants.Constant.NAME_LABEL_MAX_WIDTH;
 import static osmosis.folder.inspector.constants.Constant.PROGRESS_INDICATOR_SIZE;
 import static osmosis.folder.inspector.constants.Padding.CONTAINER_BOTTOM;
 import static osmosis.folder.inspector.constants.Padding.CONTAINER_LEFT;
@@ -64,8 +67,12 @@ public class ContainerPane extends BorderPane {
     }
 
     private static Label createNameLabel(Container container) {
-        Label value = new Label(container.getName());
+        String name = container.getName();
+        Label value = new Label(name);
         value.setPadding(new Insets(LABEL_TOP, LABEL_RIGHT, LABEL_BOTTOM, LABEL_LEFT));
+        value.setMaxWidth(NAME_LABEL_MAX_WIDTH);
+        value.setTextOverrun(OverrunStyle.ELLIPSIS);
+        value.setTooltip(new Tooltip(name));
         return value;
     }
 

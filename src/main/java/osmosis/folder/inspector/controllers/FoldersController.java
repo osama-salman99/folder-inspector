@@ -85,13 +85,19 @@ public class FoldersController extends Controller implements ChildContainerReady
     }
 
     private void initializeAddressBar() {
-        addressBar.setText(containerManager.getCurrentContainer().getPath());
+        updateAddressBar(containerManager.getCurrentContainer().getPath());
     }
 
     private void installTooltips() {
         Tooltip.install(progressText, new Tooltip(UserMessages.ITEMS_CALCULATED));
         Tooltip.install(copyAddressToClipboard, new Tooltip(UserMessages.COPY_ADDRESS_TO_CLIPBOARD));
         Tooltip.install(rootButton, new Tooltip(UserMessages.GO_TO_ROOT));
+        addressBar.setTooltip(new Tooltip());
+    }
+
+    private void updateAddressBar(String path) {
+        addressBar.setText(path);
+        addressBar.getTooltip().setText(path);
     }
 
     private void startSizeCalculation() {
@@ -115,7 +121,7 @@ public class FoldersController extends Controller implements ChildContainerReady
         containerManager.setCurrentContainer(container);
         container.setChildContainerReadyListener(this);
         addressBar.requestFocus();
-        addressBar.setText(container.getPath());
+        updateAddressBar(container.getPath());
         folderIsEmptyText.setVisible(container.isEmpty());
         refreshContents();
     }
