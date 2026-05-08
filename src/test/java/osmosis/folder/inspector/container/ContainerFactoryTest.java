@@ -1,5 +1,6 @@
 package osmosis.folder.inspector.container;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,6 +19,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.params.provider.Arguments.argumentSet;
 
 class ContainerFactoryTest {
+    @TempDir
+    static Path symlinkTempDir;
+
+    private static File symlinkFile;
+
+    @BeforeAll
+    static void createSymlink() throws Exception {
+        Path target = Files.createFile(symlinkTempDir.resolve("target.txt"));
+        symlinkFile = Files.createSymbolicLink(symlinkTempDir.resolve("link.txt"), target).toFile();
+    }
+
     @Test
     public void createsDirectoryContainerWithoutParent() {
         File file = TestUtils.getInstance().getFile("folder1");
@@ -32,7 +44,9 @@ class ContainerFactoryTest {
                 argumentSet("directory input -> DirectoryContainer",
                         TestUtils.getInstance().getFile("folder1/folder2"), DirectoryContainer.class),
                 argumentSet("regular file input -> FileContainer",
-                        TestUtils.getInstance().getFile("folder1/folder4/f1-file1.txt"), FileContainer.class)
+                        TestUtils.getInstance().getFile("folder1/folder4/f1-file1.txt"), FileContainer.class),
+                argumentSet("symlink input -> SymbolicLinkContainer",
+                        symlinkFile, SymbolicLinkContainer.class)
         );
     }
 
@@ -42,15 +56,5 @@ class ContainerFactoryTest {
         Container container = ContainerFactory.createContainer(file, null);
 
         assertInstanceOf(expectedType, container);
-    }
-
-    @Test
-    public void createsSymbolicLinkContainerForSymlinkInput(@TempDir Path tempDir) throws Exception {
-        Path target = Files.createFile(tempDir.resolve("target.txt"));
-        Path link = Files.createSymbolicLink(tempDir.resolve("link.txt"), target);
-
-        Container container = ContainerFactory.createContainer(link.toFile(), null);
-
-        assertInstanceOf(SymbolicLinkContainer.class, container);
     }
 }

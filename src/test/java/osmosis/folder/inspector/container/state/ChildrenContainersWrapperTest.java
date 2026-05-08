@@ -5,6 +5,7 @@ import org.junit.jupiter.api.io.TempDir;
 import osmosis.folder.inspector.container.Container;
 import osmosis.folder.inspector.container.ContainerFactory;
 import osmosis.folder.inspector.container.DirectoryContainer;
+import osmosis.folder.inspector.container.FileContainer;
 import osmosis.folder.inspector.test.TestUtils;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,8 +26,10 @@ class ChildrenContainersWrapperTest {
         ChildrenContainersWrapper wrapper = new ChildrenContainersWrapper(file, parent);
 
         List<Container> children = wrapper.getChildrenContainers();
+        List<String> names = children.stream().map(Container::getName).sorted().toList();
 
-        assertEquals(3, children.size());
+        assertEquals(List.of("f2-file1.txt", "f2-file2.txt", "f2-file3.zip"), names);
+        children.forEach(child -> assertInstanceOf(FileContainer.class, child));
     }
 
     @Test
