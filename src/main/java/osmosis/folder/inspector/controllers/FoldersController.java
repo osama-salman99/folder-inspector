@@ -106,6 +106,7 @@ public class FoldersController extends Controller implements ChildContainerReady
     }
 
     private void goBackToMainMenu(ActionEvent actionEvent) {
+        containerManager.getCurrentContainer().clearChildContainerReadyListener();
         setScene(actionEvent, ResourcePaths.MAIN_FXML);
         ContainerManager.getInstance().clearContainer();
     }

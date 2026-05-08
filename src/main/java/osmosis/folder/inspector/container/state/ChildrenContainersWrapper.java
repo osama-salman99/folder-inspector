@@ -9,11 +9,10 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class ChildrenContainersWrapper {
-    private final File file;
-    private final DirectoryContainer directoryContainer;
+    private File file;
+    private DirectoryContainer directoryContainer;
     private State state = new EmptyState();
     private List<Container> containers;
 
@@ -39,16 +38,18 @@ public class ChildrenContainersWrapper {
         public List<Container> getChildrenContainers() {
             containers = Arrays.stream(Optional.ofNullable(file.listFiles()).orElse(Constant.EMPTY_FILES_ARRAY))
                     .map(child -> ContainerFactory.createContainer(child, directoryContainer))
-                    .collect(Collectors.toList());
+                    .toList();
+            file = null;
+            directoryContainer = null;
             state = new InitializedState();
-            return state.getChildrenContainers();
+            return containers;
         }
     }
 
     private class InitializedState implements State {
         @Override
         public List<Container> getChildrenContainers() {
-            return List.copyOf(containers);
+            return containers;
         }
     }
 }
