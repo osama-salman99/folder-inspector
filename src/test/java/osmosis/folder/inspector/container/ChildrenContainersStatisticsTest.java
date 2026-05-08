@@ -35,8 +35,7 @@ class ChildrenContainersStatisticsTest {
 
         ChildrenContainersStatistics statistics = ChildrenContainersStatistics.calculate(container.getChildrenContainers());
 
-        long fileChildren = container.getChildrenContainers().stream().filter(Container::isReady).count();
-        assertEquals(fileChildren, statistics.getNumberOfReadyContainers());
+        assertEquals(1L, statistics.getNumberOfReadyContainers());
     }
 
     @Test
