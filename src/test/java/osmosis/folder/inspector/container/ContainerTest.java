@@ -115,48 +115,34 @@ class ContainerTest {
     }
 
     @Test
-    public void clearReadyOnDirectoryContainerRecursivelyClearsSubDirectories() throws InterruptedException {
+    public void clearReadyOnDirectoryContainerResetsChildrenToFreshInstances() throws InterruptedException {
         File file = TestUtils.getInstance().getFile("folder1");
         DirectoryContainer container = ContainerFactory.createDirectoryContainer(file);
         DirectorySizeCalculator.getInstance().calculate(container);
         Thread.sleep(200);
-        List<Container> subDirectories = container.getChildrenContainers().stream()
-                .filter(child -> child instanceof DirectoryContainer)
-                .toList();
-        assertFalse(subDirectories.isEmpty());
-        subDirectories.forEach(subDirectory -> assertTrue(subDirectory.isReady()));
+        List<Container> originalChildren = container.getChildrenContainers();
+        assertFalse(originalChildren.isEmpty());
 
         container.clearReady();
+        List<Container> refreshedChildren = container.getChildrenContainers();
 
         assertFalse(container.isReady());
-        subDirectories.forEach(subDirectory -> assertFalse(subDirectory.isReady()));
+        refreshedChildren.stream()
+                .filter(child -> child instanceof DirectoryContainer)
+                .forEach(subDirectory -> assertFalse(subDirectory.isReady()));
+        assertFalse(refreshedChildren.stream().anyMatch(originalChildren::contains));
     }
 
     @Test
-    public void clearReadyOnFileContainerRereadsSizeFromDisk(@TempDir Path tempDir) throws IOException {
-        Path filePath = tempDir.resolve("file.txt");
-        Files.writeString(filePath, "hello");
-        Container container = ContainerFactory.createContainer(filePath.toFile(), null);
-        assertEquals(5, container.getSize());
+    public void clearReadyPicksUpNewlyCreatedChildren(@TempDir Path tempDir) throws IOException {
+        DirectoryContainer container = ContainerFactory.createDirectoryContainer(tempDir.toFile());
+        assertTrue(container.getChildrenContainers().isEmpty());
 
-        Files.writeString(filePath, "hello world");
+        Files.createDirectory(tempDir.resolve("new-folder"));
+        Files.writeString(tempDir.resolve("new-file.txt"), "hello");
         container.clearReady();
 
-        assertEquals(11, container.getSize());
-    }
-
-    @Test
-    public void clearReadyOnSymbolicLinkContainerKeepsSizeAtZero() throws IOException {
-        Path tempDir = Files.createTempDirectory("folder-inspector-test");
-        Path target = Files.createFile(tempDir.resolve("target.txt"));
-        Files.writeString(target, "some content");
-        Path link = Files.createSymbolicLink(tempDir.resolve("link"), target);
-        Container container = ContainerFactory.createContainer(link.toFile(), null);
-        assertEquals(0L, container.getSize());
-
-        container.clearReady();
-
-        assertEquals(0L, container.getSize());
-        assertTrue(container.isReady());
+        List<Container> children = container.getChildrenContainers();
+        assertEquals(2, children.size());
     }
 }

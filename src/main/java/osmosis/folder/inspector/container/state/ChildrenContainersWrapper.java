@@ -30,6 +30,10 @@ public class ChildrenContainersWrapper {
         return getChildrenContainers().isEmpty();
     }
 
+    public void reset() {
+        state = new EmptyState();
+    }
+
     private interface State {
         List<Container> getChildrenContainers();
     }

@@ -51,6 +51,6 @@ public class DirectoryContainer extends Container {
     @Override
     public void clearReady() {
         super.clearReady();
-        getChildrenContainers().forEach(Container::clearReady);
+        childrenContainersWrapper.reset();
     }
 }
