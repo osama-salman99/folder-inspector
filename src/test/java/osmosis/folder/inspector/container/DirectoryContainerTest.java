@@ -7,11 +7,14 @@ import osmosis.folder.inspector.test.TestUtils;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class DirectoryContainerTest {
     @Test
@@ -48,12 +51,12 @@ class DirectoryContainerTest {
     public void invokeListenerCallsRegisteredListener() {
         File file = TestUtils.getInstance().getFile("folder1");
         DirectoryContainer container = ContainerFactory.createDirectoryContainer(file);
-        AtomicInteger callCount = new AtomicInteger();
-        container.setChildContainerReadyListener(callCount::incrementAndGet);
+        ChildContainerReadyListener listener = mock(ChildContainerReadyListener.class);
+        container.setChildContainerReadyListener(listener);
 
         container.invokeListener();
 
-        assertEquals(1, callCount.get());
+        verify(listener, times(1)).onContainerReady();
     }
 
     @Test
@@ -61,12 +64,12 @@ class DirectoryContainerTest {
         File parentFile = TestUtils.getInstance().getFile("folder1");
         DirectoryContainer parent = ContainerFactory.createDirectoryContainer(parentFile);
         DirectoryContainer child = new DirectoryContainer(TestUtils.getInstance().getFile("folder1/folder2"), parent);
-        AtomicInteger parentCallCount = new AtomicInteger();
-        parent.setChildContainerReadyListener(parentCallCount::incrementAndGet);
+        ChildContainerReadyListener parentListener = mock(ChildContainerReadyListener.class);
+        parent.setChildContainerReadyListener(parentListener);
 
         child.invokeListener();
 
-        assertEquals(1, parentCallCount.get());
+        verify(parentListener, times(1)).onContainerReady();
     }
 
     @Test
@@ -90,13 +93,13 @@ class DirectoryContainerTest {
     public void clearChildContainerReadyListenerRemovesListener() {
         File file = TestUtils.getInstance().getFile("folder1");
         DirectoryContainer container = ContainerFactory.createDirectoryContainer(file);
-        AtomicInteger callCount = new AtomicInteger();
-        container.setChildContainerReadyListener(callCount::incrementAndGet);
+        ChildContainerReadyListener listener = mock(ChildContainerReadyListener.class);
+        container.setChildContainerReadyListener(listener);
 
         container.clearChildContainerReadyListener();
         container.invokeListener();
 
-        assertEquals(0, callCount.get());
+        verify(listener, never()).onContainerReady();
     }
 
     @Test

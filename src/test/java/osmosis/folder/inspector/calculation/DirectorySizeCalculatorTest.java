@@ -5,6 +5,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import osmosis.folder.inspector.container.ChildContainerReadyListener;
 import osmosis.folder.inspector.container.ContainerFactory;
 import osmosis.folder.inspector.container.DirectoryContainer;
 import osmosis.folder.inspector.test.TestUtils;
@@ -12,12 +13,14 @@ import osmosis.folder.inspector.test.TestUtils;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class DirectorySizeCalculatorTest {
     @ParameterizedTest
@@ -56,13 +59,13 @@ class DirectorySizeCalculatorTest {
         Files.createFile(tempDir.resolve("a.txt"));
         Files.createFile(tempDir.resolve("b.txt"));
         DirectoryContainer container = ContainerFactory.createDirectoryContainer(tempDir.toFile());
-        AtomicInteger callCount = new AtomicInteger();
-        container.setChildContainerReadyListener(callCount::incrementAndGet);
+        ChildContainerReadyListener listener = mock(ChildContainerReadyListener.class);
+        container.setChildContainerReadyListener(listener);
 
         DirectorySizeCalculator.getInstance().calculate(container);
         Thread.sleep(300);
 
-        assertEquals(1, callCount.get());
+        verify(listener, times(1)).onContainerReady();
     }
 
     @Test

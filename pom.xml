@@ -18,6 +18,7 @@
         <!-- Dependencies Versions -->
         <org.openjfx-version>23</org.openjfx-version>
         <org.junit.jupiter-version>6.0.1</org.junit.jupiter-version>
+        <org.mockito-version>5.14.2</org.mockito-version>
 
         <!-- Plugins Versions -->
         <maven-shade-plugin-version>3.6.1</maven-shade-plugin-version>
@@ -53,6 +54,12 @@
                 <version>${org.junit.jupiter-version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${org.mockito-version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -73,6 +80,11 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -148,6 +160,7 @@
                             <exclude>osmosis/folder/inspector/constants/providers/**</exclude>
                             <exclude>osmosis/folder/inspector/dimensions/**</exclude>
                             <exclude>osmosis/folder/inspector/constants/Constant.class</exclude>
+                            <exclude>osmosis/folder/inspector/exceptions/**</exclude>
                         </excludes>
                     </configuration>
                     <executions>
