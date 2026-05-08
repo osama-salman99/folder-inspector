@@ -35,6 +35,21 @@
                     <Insets right="5"/>
                 </HBox.margin>
             </Button>
+            <Button fx:id="refreshContentCalculationButton"
+                    focusTraversable="false"
+                    maxWidth="20"
+                    maxHeight="20"
+                    onAction="#refreshContentCalculation">
+                <graphic>
+                    <ImageView fitHeight="20"
+                               fitWidth="20">
+                        <Image url="@../../icons/refresh_icon.png"/>
+                    </ImageView>
+                </graphic>
+                <HBox.margin>
+                    <Insets right="5"/>
+                </HBox.margin>
+            </Button>
             <TextField fx:id="addressBar"
                        minHeight="30"
                        prefHeight="30"

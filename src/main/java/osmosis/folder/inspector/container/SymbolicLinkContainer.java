@@ -12,4 +12,9 @@ public class SymbolicLinkContainer extends Container {
     public String getName() {
         return "(Symbolic Link) " + super.getName();
     }
+
+    @Override
+    public void clearReady() {
+        setSize(0L);
+    }
 }

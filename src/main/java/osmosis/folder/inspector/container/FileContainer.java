@@ -7,4 +7,9 @@ public class FileContainer extends Container {
         super(file, parent);
         setSize(file.length());
     }
+
+    @Override
+    public void clearReady() {
+        setSize(file.length());
+    }
 }

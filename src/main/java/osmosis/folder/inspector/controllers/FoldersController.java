@@ -39,6 +39,7 @@ public class FoldersController extends Controller implements ChildContainerReady
     public Text folderIsEmptyText;
     public Text directorySizeText;
     public Button copyAddressToClipboard;
+    public Button refreshContentCalculationButton;
     public ProgressIndicator progressIndicator;
 
     @Override
@@ -67,6 +68,14 @@ public class FoldersController extends Controller implements ChildContainerReady
     }
 
     @FXML
+    public void refreshContentCalculation() {
+        containerManager.getCurrentContainer().clearReady();
+        directorySizeText.setText("");
+        startSizeCalculation();
+        refreshContents();
+    }
+
+    @FXML
     public void goBack(ActionEvent actionEvent) {
         if (containerManager.getCurrentContainer().hasParentContainer()) {
             showContainer(containerManager.getCurrentContainer().getParent());
@@ -92,6 +101,7 @@ public class FoldersController extends Controller implements ChildContainerReady
         Tooltip.install(progressText, new Tooltip(UserMessages.ITEMS_CALCULATED));
         Tooltip.install(copyAddressToClipboard, new Tooltip(UserMessages.COPY_ADDRESS_TO_CLIPBOARD));
         Tooltip.install(rootButton, new Tooltip(UserMessages.GO_TO_ROOT));
+        Tooltip.install(refreshContentCalculationButton, new Tooltip(UserMessages.REFRESH_CONTENT_CALCULATION));
     }
 
     private void startSizeCalculation() {
@@ -131,11 +141,16 @@ public class FoldersController extends Controller implements ChildContainerReady
         updateProgress(statistics.getNumberOfReadyContainers(), statistics.getNumberOfChildren());
     }
 
-    private void updateProgress(long completed, long all) {
-        boolean visibility = completed != all;
-        progressIndicator.setVisible(visibility);
-        progressText.setVisible(visibility);
-        progressText.setText(completed + Constant.FILE_SEPARATOR + all);
+    private void updateProgress(long completedCount, long totalCount) {
+        boolean notComplete = !isComplete(completedCount, totalCount);
+        refreshContentCalculationButton.setDisable(notComplete);
+        progressIndicator.setVisible(notComplete);
+        progressText.setVisible(notComplete);
+        progressText.setText(completedCount + Constant.FILE_SEPARATOR + totalCount);
+    }
+
+    private static boolean isComplete(long completedCount, long totalCount) {
+        return completedCount == totalCount;
     }
 
     private void addContainerPane(Container container) {

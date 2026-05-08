@@ -47,4 +47,10 @@ public class DirectoryContainer extends Container {
     public void setSize(long size) {
         super.setSize(size);
     }
+
+    @Override
+    public void clearReady() {
+        super.clearReady();
+        getChildrenContainers().forEach(Container::clearReady);
+    }
 }
