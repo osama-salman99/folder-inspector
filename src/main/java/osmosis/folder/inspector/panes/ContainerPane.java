@@ -11,7 +11,9 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import osmosis.folder.inspector.constants.Constant;
 import osmosis.folder.inspector.constants.providers.ContainerIconProvider;
 import osmosis.folder.inspector.container.Container;
@@ -20,7 +22,6 @@ import osmosis.folder.inspector.formatter.DigitalFormatter;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static osmosis.folder.inspector.constants.Constant.ICON_SIZE;
-import static osmosis.folder.inspector.constants.Constant.NAME_LABEL_MAX_WIDTH;
 import static osmosis.folder.inspector.constants.Constant.PROGRESS_INDICATOR_SIZE;
 import static osmosis.folder.inspector.constants.Padding.CONTAINER_BOTTOM;
 import static osmosis.folder.inspector.constants.Padding.CONTAINER_LEFT;
@@ -44,7 +45,7 @@ public class ContainerPane extends BorderPane {
         }
         previousIsDefault.set(!previousIsDefault.get());
 
-        setLeft(createNamePane(container));
+        setCenter(createNamePane(container));
         setRight(createSizeLabel(container));
     }
 
@@ -60,9 +61,9 @@ public class ContainerPane extends BorderPane {
     }
 
     private static Pane createNamePane(Container container) {
-        BorderPane pane = new BorderPane();
-        pane.setRight(createNameLabel(container));
-        pane.setLeft(createIcon(container));
+        Label nameLabel = createNameLabel(container);
+        HBox pane = new HBox(createIcon(container), nameLabel);
+        HBox.setHgrow(nameLabel, Priority.ALWAYS);
         return pane;
     }
 
@@ -70,7 +71,8 @@ public class ContainerPane extends BorderPane {
         String name = container.getName();
         Label value = new Label(name);
         value.setPadding(new Insets(LABEL_TOP, LABEL_RIGHT, LABEL_BOTTOM, LABEL_LEFT));
-        value.setMaxWidth(NAME_LABEL_MAX_WIDTH);
+        value.setMaxWidth(Double.MAX_VALUE);
+        value.setMinWidth(0);
         value.setTextOverrun(OverrunStyle.LEADING_ELLIPSIS);
         value.setTooltip(new Tooltip(name));
         return value;
