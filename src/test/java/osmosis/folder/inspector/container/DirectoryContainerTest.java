@@ -19,6 +19,8 @@ class DirectoryContainerTest {
         File file = TestUtils.getInstance().getFile("folder1/folder2");
         DirectoryContainer container = ContainerFactory.createDirectoryContainer(file);
 
+        assertEquals(3, container.getChildrenContainers().size());
+
         List<String> names = container.getChildrenContainers().stream()
                 .map(Container::getName)
                 .sorted()
