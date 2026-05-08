@@ -25,6 +25,8 @@
         <maven-surefire-plugin-version>3.5.4</maven-surefire-plugin-version>
         <maven-compiler-plugin-version>3.14.1</maven-compiler-plugin-version>
         <maven-checkstyle-plugin-version>3.6.0</maven-checkstyle-plugin-version>
+        <jacoco-maven-plugin-version>0.8.13</jacoco-maven-plugin-version>
+        <jacoco.line.coverage.minimum>0.90</jacoco.line.coverage.minimum>
     </properties>
 
     <dependencyManagement>
@@ -134,6 +136,58 @@
                     </executions>
                 </plugin>
                 <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-maven-plugin-version}</version>
+                    <configuration>
+                        <excludes>
+                            <exclude>osmosis/folder/inspector/Main.class</exclude>
+                            <exclude>osmosis/folder/inspector/FolderInspector.class</exclude>
+                            <exclude>osmosis/folder/inspector/controllers/**</exclude>
+                            <exclude>osmosis/folder/inspector/panes/**</exclude>
+                            <exclude>osmosis/folder/inspector/constants/providers/**</exclude>
+                            <exclude>osmosis/folder/inspector/dimensions/**</exclude>
+                            <exclude>osmosis/folder/inspector/constants/Constant.class</exclude>
+                        </excludes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>check</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <rule>
+                                        <element>BUNDLE</element>
+                                        <limits>
+                                            <limit>
+                                                <counter>LINE</counter>
+                                                <value>COVEREDRATIO</value>
+                                                <minimum>${jacoco.line.coverage.minimum}</minimum>
+                                            </limit>
+                                        </limits>
+                                    </rule>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>${maven-shade-plugin-version}</version>
@@ -175,6 +229,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
