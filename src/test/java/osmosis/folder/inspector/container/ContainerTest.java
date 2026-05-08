@@ -1,5 +1,6 @@
 package osmosis.folder.inspector.container;
 
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import osmosis.folder.inspector.calculation.DirectorySizeCalculator;
@@ -10,6 +11,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -144,5 +147,45 @@ class ContainerTest {
 
         List<Container> children = container.getChildrenContainers();
         assertEquals(2, children.size());
+    }
+
+    @RepeatedTest(20)
+    public void concurrentGetChildrenContainersAfterClearReadyReturnsSameInstances(@TempDir Path tempDir) throws IOException, InterruptedException {
+        Files.createDirectory(tempDir.resolve("sub1"));
+        Files.createDirectory(tempDir.resolve("sub2"));
+        Files.writeString(tempDir.resolve("file.txt"), "abc");
+        DirectoryContainer container = ContainerFactory.createDirectoryContainer(tempDir.toFile());
+        container.getChildrenContainers();
+        container.clearReady();
+
+        CountDownLatch start = new CountDownLatch(1);
+        @SuppressWarnings("unchecked")
+        List<Container>[] results = new List[2];
+        Thread t1 = new Thread(() -> {
+            awaitQuietly(start);
+            results[0] = container.getChildrenContainers();
+        });
+        Thread t2 = new Thread(() -> {
+            awaitQuietly(start);
+            results[1] = container.getChildrenContainers();
+        });
+        t1.start();
+        t2.start();
+        start.countDown();
+        t1.join(TimeUnit.SECONDS.toMillis(5));
+        t2.join(TimeUnit.SECONDS.toMillis(5));
+
+        for (int i = 0; i < results[0].size(); i++) {
+            assertSame(results[0].get(i), results[1].get(i),
+                    "concurrent calls returned different Container instances at index " + i);
+        }
+    }
+
+    private static void awaitQuietly(CountDownLatch latch) {
+        try {
+            latch.await();
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

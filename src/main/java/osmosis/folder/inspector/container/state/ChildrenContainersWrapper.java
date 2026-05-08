@@ -22,7 +22,7 @@ public class ChildrenContainersWrapper {
         this.directoryContainer = directoryContainer;
     }
 
-    public List<Container> getChildrenContainers() {
+    public synchronized List<Container> getChildrenContainers() {
         return state.getChildrenContainers();
     }
 
@@ -30,7 +30,7 @@ public class ChildrenContainersWrapper {
         return getChildrenContainers().isEmpty();
     }
 
-    public void reset() {
+    public synchronized void reset() {
         state = new EmptyState();
     }
 
