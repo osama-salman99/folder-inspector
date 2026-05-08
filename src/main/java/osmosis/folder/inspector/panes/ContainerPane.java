@@ -71,7 +71,7 @@ public class ContainerPane extends BorderPane {
         Label value = new Label(name);
         value.setPadding(new Insets(LABEL_TOP, LABEL_RIGHT, LABEL_BOTTOM, LABEL_LEFT));
         value.setMaxWidth(NAME_LABEL_MAX_WIDTH);
-        value.setTextOverrun(OverrunStyle.ELLIPSIS);
+        value.setTextOverrun(OverrunStyle.LEADING_ELLIPSIS);
         value.setTooltip(new Tooltip(name));
         return value;
     }
