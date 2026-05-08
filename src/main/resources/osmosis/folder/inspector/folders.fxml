@@ -66,6 +66,16 @@
                             </Insets>
                         </HBox.margin>
                     </Button>
+                    <Button fx:id="rootButton" focusTraversable="false" onAction="#goToRoot"
+                            text="Root">
+                        <HBox.margin>
+                            <Insets>
+                                <top>5</top>
+                                <left>5</left>
+                                <bottom>5</bottom>
+                            </Insets>
+                        </HBox.margin>
+                    </Button>
                 </HBox>
             </left>
             <center>
