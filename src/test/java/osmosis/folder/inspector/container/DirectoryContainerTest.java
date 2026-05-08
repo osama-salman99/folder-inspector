@@ -6,6 +6,7 @@ import osmosis.folder.inspector.test.TestUtils;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +19,12 @@ class DirectoryContainerTest {
         File file = TestUtils.getInstance().getFile("folder1/folder2");
         DirectoryContainer container = ContainerFactory.createDirectoryContainer(file);
 
-        assertEquals(3, container.getChildrenContainers().size());
+        List<String> names = container.getChildrenContainers().stream()
+                .map(Container::getName)
+                .sorted()
+                .toList();
+
+        assertEquals(List.of("f2-file1.txt", "f2-file2.txt", "f2-file3.zip"), names);
     }
 
     @Test

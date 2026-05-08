@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.params.provider.Arguments.argumentSet;
 
 class ContainerFactoryTest {
     @Test
@@ -26,19 +27,21 @@ class ContainerFactoryTest {
         assertNull(container.getParent());
     }
 
+    public static Stream<Arguments> containerInputProvider() {
+        return Stream.of(
+                argumentSet("directory input -> DirectoryContainer",
+                        TestUtils.getInstance().getFile("folder1/folder2"), DirectoryContainer.class),
+                argumentSet("regular file input -> FileContainer",
+                        TestUtils.getInstance().getFile("folder1/folder4/f1-file1.txt"), FileContainer.class)
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("containerInputProvider")
     public void createsAppropriateContainerForInput(File file, Class<? extends Container> expectedType) {
         Container container = ContainerFactory.createContainer(file, null);
 
         assertInstanceOf(expectedType, container);
-    }
-
-    public static Stream<Arguments> containerInputProvider() {
-        return Stream.of(
-                Arguments.of(TestUtils.getInstance().getFile("folder1/folder2"), DirectoryContainer.class),
-                Arguments.of(TestUtils.getInstance().getFile("folder1/folder4/f1-file1.txt"), FileContainer.class)
-        );
     }
 
     @Test
