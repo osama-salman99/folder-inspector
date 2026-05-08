@@ -1,4 +1,5 @@
 module osmosis.folderinspector {
+    requires java.logging;
     requires javafx.controls;
     requires javafx.fxml;
 

@@ -29,8 +29,12 @@ import osmosis.folder.inspector.panes.ContainerPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FoldersController extends Controller implements ChildContainerReadyListener {
+    private static final Logger LOGGER = Logger.getLogger(FoldersController.class.getName());
+
     public VBox foldersVBox;
     public Button backButton;
     public Button rootButton;
@@ -43,6 +47,7 @@ public class FoldersController extends Controller implements ChildContainerReady
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        LOGGER.log(Level.INFO, "Folders controller initialized");
         installTooltips();
         initializeAddressBar();
         initializeParentContainer();
@@ -64,6 +69,7 @@ public class FoldersController extends Controller implements ChildContainerReady
         ClipboardContent content = new ClipboardContent();
         content.putString(addressBar.getText());
         clipboard.setContent(content);
+        LOGGER.log(Level.INFO, "Copied address to clipboard: {0}", addressBar.getText());
     }
 
     @FXML
@@ -106,6 +112,7 @@ public class FoldersController extends Controller implements ChildContainerReady
     }
 
     private void goBackToMainMenu(ActionEvent actionEvent) {
+        LOGGER.log(Level.INFO, "Returning to main menu");
         setScene(actionEvent, ResourcePaths.MAIN_FXML);
         ContainerManager.getInstance().clearContainer();
     }

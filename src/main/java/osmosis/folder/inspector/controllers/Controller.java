@@ -14,8 +14,12 @@ import osmosis.folder.inspector.container.ContainerManager;
 import osmosis.folder.inspector.controllers.data.ControllersData;
 
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Controller implements Initializable {
+    private static final Logger LOGGER = Logger.getLogger(Controller.class.getName());
+
     protected static final ControllersData data = ControllersData.getInstance();
     protected static final ContainerManager containerManager = ContainerManager.getInstance();
 
@@ -31,7 +35,7 @@ public abstract class Controller implements Initializable {
         try {
             stage.setScene(new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getResource(ResourcePathProvider.getFxml(resourceName))))));
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to load scene for resource " + resourceName, exception);
             showErrorAlert(ErrorMessages.ERROR_OCCURRED + exception.getMessage());
         }
     }

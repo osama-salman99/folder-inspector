@@ -15,8 +15,12 @@ import osmosis.folder.inspector.exceptions.InvalidDirectoryException;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainController extends Controller {
+    private static final Logger LOGGER = Logger.getLogger(MainController.class.getName());
+
     public VBox mainBox;
     public Button inspectButton;
     public TextField pathInputField;
@@ -24,6 +28,7 @@ public class MainController extends Controller {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        LOGGER.log(Level.INFO, "Main controller initialized");
         Platform.runLater(this::initializePathInputField);
     }
 
@@ -45,9 +50,11 @@ public class MainController extends Controller {
         try {
             file = PathInputResolver.resolveDirectory(pathInputField.getText());
         } catch (InvalidDirectoryException exception) {
+            LOGGER.log(Level.WARNING, "Invalid directory provided: {0}", exception.getMessage());
             showAlert(exception.getMessage());
             return;
         }
+        LOGGER.log(Level.INFO, "Root directory selected: {0}", file.getAbsolutePath());
         goToFolderView(actionEvent, file);
     }
 
