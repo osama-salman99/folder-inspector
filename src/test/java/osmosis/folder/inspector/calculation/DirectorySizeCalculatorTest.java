@@ -62,7 +62,7 @@ class DirectorySizeCalculatorTest {
         DirectorySizeCalculator.getInstance().calculate(container);
         Thread.sleep(300);
 
-        assertTrue(callCount.get() >= 1);
+        assertEquals(1, callCount.get());
     }
 
     @Test
