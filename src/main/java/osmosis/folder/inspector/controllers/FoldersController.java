@@ -22,7 +22,6 @@ import osmosis.folder.inspector.constants.providers.AlertProvider;
 import osmosis.folder.inspector.container.ChildContainerReadyListener;
 import osmosis.folder.inspector.container.ChildrenContainersStatistics;
 import osmosis.folder.inspector.container.Container;
-import osmosis.folder.inspector.container.ContainerManager;
 import osmosis.folder.inspector.container.DirectoryContainer;
 import osmosis.folder.inspector.formatter.DigitalFormatter;
 import osmosis.folder.inspector.panes.ContainerPane;
@@ -68,8 +67,9 @@ public class FoldersController extends Controller implements ChildContainerReady
 
     @FXML
     public void goBack(ActionEvent actionEvent) {
-        if (containerManager.getCurrentContainer().hasParentContainer()) {
-            showContainer(containerManager.getCurrentContainer().getParent());
+        DirectoryContainer current = containerManager.getCurrentContainer();
+        if (current.hasParentContainer()) {
+            showContainer(current.getParent());
             return;
         }
         confirmGoingToMainMenu(actionEvent);
@@ -107,13 +107,11 @@ public class FoldersController extends Controller implements ChildContainerReady
 
     private void goBackToMainMenu(ActionEvent actionEvent) {
         setScene(actionEvent, ResourcePaths.MAIN_FXML);
-        ContainerManager.getInstance().clearContainer();
+        containerManager.clearContainer();
     }
 
     private void showContainer(DirectoryContainer container) {
-        containerManager.getCurrentContainer().clearChildContainerReadyListener();
-        containerManager.setCurrentContainer(container);
-        container.setChildContainerReadyListener(this);
+        containerManager.navigateTo(container, this);
         addressBar.requestFocus();
         addressBar.setText(container.getPath());
         folderIsEmptyText.setVisible(container.isEmpty());
@@ -121,14 +119,22 @@ public class FoldersController extends Controller implements ChildContainerReady
     }
 
     private void refreshContents() {
-        foldersVBox.getChildren().clear();
         DirectoryContainer container = containerManager.getCurrentContainer();
+        ChildrenContainersStatistics statistics = ChildrenContainersStatistics.calculate(container.getChildrenContainers());
+        renderChildren(statistics);
+        renderDirectorySize(container);
+        updateProgress(statistics.getNumberOfReadyContainers(), statistics.getNumberOfChildren());
+    }
+
+    private void renderChildren(ChildrenContainersStatistics statistics) {
+        foldersVBox.getChildren().clear();
+        statistics.getChildrenContainers().forEach(this::addContainerPane);
+    }
+
+    private void renderDirectorySize(DirectoryContainer container) {
         if (container.isReady()) {
             directorySizeText.setText(DigitalFormatter.formatSize(container.getSize()));
         }
-        ChildrenContainersStatistics statistics = ChildrenContainersStatistics.calculate(container.getChildrenContainers());
-        statistics.getChildrenContainers().forEach(this::addContainerPane);
-        updateProgress(statistics.getNumberOfReadyContainers(), statistics.getNumberOfChildren());
     }
 
     private void updateProgress(long completed, long all) {

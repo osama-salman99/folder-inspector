@@ -54,7 +54,7 @@ class DirectoryContainerTest {
         ChildContainerReadyListener listener = mock(ChildContainerReadyListener.class);
         container.setChildContainerReadyListener(listener);
 
-        container.invokeListener();
+        container.completeWithSize(0L);
 
         verify(listener, times(1)).onContainerReady();
     }
@@ -67,7 +67,7 @@ class DirectoryContainerTest {
         ChildContainerReadyListener parentListener = mock(ChildContainerReadyListener.class);
         parent.setChildContainerReadyListener(parentListener);
 
-        child.invokeListener();
+        child.completeWithSize(0L);
 
         verify(parentListener, times(1)).onContainerReady();
     }
@@ -78,7 +78,7 @@ class DirectoryContainerTest {
         DirectoryContainer parent = ContainerFactory.createDirectoryContainer(parentFile);
         DirectoryContainer child = new DirectoryContainer(TestUtils.getInstance().getFile("folder1/folder2"), parent);
 
-        child.invokeListener();
+        child.completeWithSize(0L);
     }
 
     @Test
@@ -86,7 +86,7 @@ class DirectoryContainerTest {
         File file = TestUtils.getInstance().getFile("folder1");
         DirectoryContainer container = ContainerFactory.createDirectoryContainer(file);
 
-        container.invokeListener();
+        container.completeWithSize(0L);
     }
 
     @Test
@@ -97,17 +97,17 @@ class DirectoryContainerTest {
         container.setChildContainerReadyListener(listener);
 
         container.clearChildContainerReadyListener();
-        container.invokeListener();
+        container.completeWithSize(0L);
 
         verify(listener, never()).onContainerReady();
     }
 
     @Test
-    public void setSizeUpdatesContainerSize() {
+    public void completeWithSizeUpdatesContainerSize() {
         File file = TestUtils.getInstance().getFile("folder1");
         DirectoryContainer container = ContainerFactory.createDirectoryContainer(file);
 
-        container.setSize(987L);
+        container.completeWithSize(987L);
 
         assertEquals(987L, container.getSize());
     }

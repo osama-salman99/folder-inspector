@@ -6,6 +6,7 @@ import osmosis.folder.inspector.test.TestUtils;
 
 import java.io.File;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
@@ -26,20 +27,30 @@ class ContainerManagerTest {
     }
 
     @Test
-    public void setCurrentContainerStoresContainer() {
+    public void setRootContainerStoresContainerForFile() {
         File file = TestUtils.getInstance().getFile("folder1");
-        DirectoryContainer container = ContainerFactory.createDirectoryContainer(file);
 
-        ContainerManager.getInstance().setCurrentContainer(container);
+        ContainerManager.getInstance().setRootContainer(file);
 
-        assertSame(container, ContainerManager.getInstance().getCurrentContainer());
+        DirectoryContainer current = ContainerManager.getInstance().getCurrentContainer();
+        assertEquals(file.getAbsolutePath(), current.getPath());
+    }
+
+    @Test
+    public void navigateToReplacesCurrentContainer() {
+        File rootFile = TestUtils.getInstance().getFile("folder1");
+        ContainerManager.getInstance().setRootContainer(rootFile);
+        DirectoryContainer child = ContainerFactory.createDirectoryContainer(
+                TestUtils.getInstance().getFile("folder1/folder2"));
+
+        ContainerManager.getInstance().navigateTo(child, () -> { });
+
+        assertSame(child, ContainerManager.getInstance().getCurrentContainer());
     }
 
     @Test
     public void clearContainerResetsToNull() {
-        File file = TestUtils.getInstance().getFile("folder1");
-        DirectoryContainer container = ContainerFactory.createDirectoryContainer(file);
-        ContainerManager.getInstance().setCurrentContainer(container);
+        ContainerManager.getInstance().setRootContainer(TestUtils.getInstance().getFile("folder1"));
 
         ContainerManager.getInstance().clearContainer();
 

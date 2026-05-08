@@ -40,8 +40,7 @@ class FoldersControllerTest {
     @Start
     private void start(Stage stage) throws Exception {
         rootDir = TestUtils.getInstance().getFile("folder1/folder2");
-        DirectoryContainer container = ContainerFactory.createDirectoryContainer(rootDir);
-        ContainerManager.getInstance().setCurrentContainer(container);
+        ContainerManager.getInstance().setRootContainer(rootDir);
 
         Parent root = FXMLLoader.load(Objects.requireNonNull(
                 getClass().getResource("/osmosis/folder/inspector/" + ResourcePaths.FOLDERS_FXML)));
@@ -138,7 +137,7 @@ class FoldersControllerTest {
         WaitForAsyncUtils.waitForFxEvents();
 
         DirectoryContainer current = ContainerManager.getInstance().getCurrentContainer();
-        current.setSize(1234L);
+        current.completeWithSize(1234L);
         robot.interact(() -> {
             // simulate onContainerReady() which schedules refreshContents on the FX thread
         });

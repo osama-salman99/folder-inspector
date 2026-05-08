@@ -9,7 +9,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import osmosis.folder.inspector.constants.ResourcePaths;
-import osmosis.folder.inspector.container.ContainerFactory;
 import osmosis.folder.inspector.exceptions.InvalidDirectoryException;
 
 import java.io.File;
@@ -59,7 +58,7 @@ public class MainController extends Controller {
 
     private void goToFolderView(ActionEvent actionEvent, File file) {
         data.setMainPath(file.getAbsolutePath());
-        containerManager.setCurrentContainer(ContainerFactory.createDirectoryContainer(file));
+        containerManager.setRootContainer(file);
         mainBox.setDisable(false);
         hideProgressIndicator();
         setScene(actionEvent, ResourcePaths.FOLDERS_FXML);

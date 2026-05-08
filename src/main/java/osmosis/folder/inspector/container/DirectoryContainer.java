@@ -24,7 +24,12 @@ public class DirectoryContainer extends Container {
         this.childContainerReadyListener = null;
     }
 
-    public void invokeListener() {
+    public void completeWithSize(long size) {
+        setSize(size);
+        invokeListener();
+    }
+
+    private void invokeListener() {
         if (hasListener()) {
             childContainerReadyListener.onContainerReady();
         } else if (hasParentContainer() && parent.hasListener()) {
@@ -42,9 +47,5 @@ public class DirectoryContainer extends Container {
 
     public boolean isEmpty() {
         return childrenContainersWrapper.isEmpty();
-    }
-
-    public void setSize(long size) {
-        super.setSize(size);
     }
 }
