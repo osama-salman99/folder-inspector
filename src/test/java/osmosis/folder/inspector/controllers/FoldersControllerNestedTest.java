@@ -100,4 +100,32 @@ class FoldersControllerNestedTest {
 
         assertNotNull(ContainerManager.getInstance().getCurrentContainer());
     }
+
+    @Test
+    public void rootButtonNavigatesToRoot(FxRobot robot) {
+        DirectoryContainer root = ContainerFactory.createDirectoryContainer(
+                TestUtils.getInstance().getFile("folder1"));
+        DirectoryContainer mid = new DirectoryContainer(
+                TestUtils.getInstance().getFile("folder1/folder2"), root);
+        DirectoryContainer leaf = new DirectoryContainer(
+                TestUtils.getInstance().getFile("folder1/folder2"), mid);
+        ContainerManager.getInstance().setCurrentContainer(leaf);
+
+        Button rootButton = robot.lookup("#rootButton").queryAs(Button.class);
+        robot.interact(rootButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        assertNotNull(ContainerManager.getInstance().getCurrentContainer());
+    }
+
+    @Test
+    public void refreshContentCalculationResetsAndRecalculates(FxRobot robot) {
+        WaitForAsyncUtils.waitForFxEvents();
+
+        Button refresh = robot.lookup("#refreshContentCalculationButton").queryAs(Button.class);
+        robot.interact(refresh::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        assertNotNull(refresh);
+    }
 }

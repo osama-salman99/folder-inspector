@@ -22,12 +22,16 @@ public class ChildrenContainersWrapper {
         this.directoryContainer = directoryContainer;
     }
 
-    public List<Container> getChildrenContainers() {
+    public synchronized List<Container> getChildrenContainers() {
         return state.getChildrenContainers();
     }
 
     public boolean isEmpty() {
         return getChildrenContainers().isEmpty();
+    }
+
+    public synchronized void reset() {
+        state = new EmptyState();
     }
 
     private interface State {

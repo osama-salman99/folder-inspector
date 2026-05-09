@@ -38,6 +38,10 @@ public abstract class Container implements Comparable<Container> {
         return size != Long.MIN_VALUE;
     }
 
+    public void clearReady() {
+        size = Long.MIN_VALUE;
+    }
+
     public boolean hasParentContainer() {
         return Objects.nonNull(parent);
     }
