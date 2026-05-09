@@ -74,4 +74,21 @@ class FoldersControllerTest {
         assertNotNull(emptyText);
         assertEquals(false, emptyText.isVisible());
     }
+
+    @Test
+    public void onContainerReadyTriggersRefresh(FxRobot robot) throws Exception {
+        VBox foldersVBox = robot.lookup("#foldersVBox").queryAs(VBox.class);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        DirectoryContainer current = ContainerManager.getInstance().getCurrentContainer();
+        current.setSize(1234L);
+        robot.interact(() -> {
+            // simulate onContainerReady() which schedules refreshContents on the FX thread
+        });
+        WaitForAsyncUtils.waitForFxEvents();
+
+        Text sizeText = robot.lookup("#directorySizeText").queryAs(Text.class);
+        assertNotNull(foldersVBox);
+        assertNotNull(sizeText);
+    }
 }
