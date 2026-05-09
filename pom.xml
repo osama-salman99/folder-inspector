@@ -185,9 +185,8 @@
                             <exclude>osmosis/folder/inspector/controllers/Controller.class</exclude>
                             <exclude>osmosis/folder/inspector/controllers/MainController.class</exclude>
                             <exclude>osmosis/folder/inspector/controllers/FoldersController.class</exclude>
-                            <exclude>osmosis/folder/inspector/controllers/data/**</exclude>
-                            <exclude>osmosis/folder/inspector/constants/providers/**</exclude>
-                            <exclude>osmosis/folder/inspector/constants/Constant.class</exclude>
+                            <exclude>osmosis/folder/inspector/constants/providers/AlertProvider.class</exclude>
+                            <exclude>osmosis/folder/inspector/constants/providers/ContainerIconProvider.class</exclude>
                             <exclude>osmosis/folder/inspector/exceptions/**</exclude>
                         </excludes>
                     </configuration>
