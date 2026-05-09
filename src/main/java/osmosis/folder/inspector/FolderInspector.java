@@ -10,15 +10,21 @@ import osmosis.folder.inspector.constants.ResourcePaths;
 import osmosis.folder.inspector.dimensions.Dimensions;
 
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FolderInspector extends Application {
+    private static final Logger LOGGER = Logger.getLogger(FolderInspector.class.getName());
+
     @Override
     public void start(Stage primaryStage) throws Exception {
+        LOGGER.log(Level.INFO, "Initializing primary stage");
         setDimensions(primaryStage);
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(ResourcePaths.MAIN_FXML)));
         primaryStage.setTitle(Constant.FOLDER_INSPECTOR);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+        LOGGER.log(Level.INFO, "Primary stage shown");
     }
 
     private void setDimensions(Stage primaryStage) {
