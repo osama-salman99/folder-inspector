@@ -22,12 +22,19 @@ import osmosis.folder.inspector.test.TestUtils;
 import java.io.File;
 import java.util.Objects;
 
+import org.junit.jupiter.api.AfterEach;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(ApplicationExtension.class)
 class FoldersControllerTest {
     private File rootDir;
+
+    @AfterEach
+    void clearContainerManagerState() {
+        ContainerManager.getInstance().clearContainer();
+    }
 
     @Start
     private void start(Stage stage) throws Exception {

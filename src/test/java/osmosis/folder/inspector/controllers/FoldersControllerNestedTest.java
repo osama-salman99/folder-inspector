@@ -21,11 +21,18 @@ import osmosis.folder.inspector.panes.ContainerPane;
 
 import java.util.Objects;
 
+import org.junit.jupiter.api.AfterEach;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(ApplicationExtension.class)
 class FoldersControllerNestedTest {
+    @AfterEach
+    void clearContainerManagerState() {
+        ContainerManager.getInstance().clearContainer();
+    }
+
     @Start
     private void start(Stage stage) throws Exception {
         DirectoryContainer container = ContainerFactory.createDirectoryContainer(
