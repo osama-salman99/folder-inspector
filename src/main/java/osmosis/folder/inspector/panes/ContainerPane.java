@@ -3,13 +3,17 @@ package osmosis.folder.inspector.panes;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import osmosis.folder.inspector.constants.Constant;
 import osmosis.folder.inspector.constants.providers.ContainerIconProvider;
 import osmosis.folder.inspector.container.Container;
@@ -41,7 +45,7 @@ public class ContainerPane extends BorderPane {
         }
         previousIsDefault.set(!previousIsDefault.get());
 
-        setLeft(createNamePane(container));
+        setCenter(createNamePane(container));
         setRight(createSizeLabel(container));
     }
 
@@ -57,15 +61,20 @@ public class ContainerPane extends BorderPane {
     }
 
     private static Pane createNamePane(Container container) {
-        BorderPane pane = new BorderPane();
-        pane.setRight(createNameLabel(container));
-        pane.setLeft(createIcon(container));
+        Label nameLabel = createNameLabel(container);
+        HBox pane = new HBox(createIcon(container), nameLabel);
+        HBox.setHgrow(nameLabel, Priority.ALWAYS);
         return pane;
     }
 
     private static Label createNameLabel(Container container) {
-        Label value = new Label(container.getName());
+        String name = container.getName();
+        Label value = new Label(name);
         value.setPadding(new Insets(LABEL_TOP, LABEL_RIGHT, LABEL_BOTTOM, LABEL_LEFT));
+        value.setMaxWidth(Double.MAX_VALUE);
+        value.setMinWidth(0);
+        value.setTextOverrun(OverrunStyle.LEADING_ELLIPSIS);
+        value.setTooltip(new Tooltip(name));
         return value;
     }
 

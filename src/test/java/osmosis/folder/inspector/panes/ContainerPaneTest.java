@@ -30,7 +30,7 @@ class ContainerPaneTest {
         ContainerPane pane = new ContainerPane(container);
 
         assertSame(container, pane.getContainer());
-        assertNotNull(pane.getLeft());
+        assertNotNull(pane.getCenter());
         assertNotNull(pane.getRight());
     }
 
@@ -42,7 +42,7 @@ class ContainerPaneTest {
         ContainerPane pane = new ContainerPane(container);
 
         assertSame(container, pane.getContainer());
-        assertNotNull(pane.getLeft());
+        assertNotNull(pane.getCenter());
         assertNotNull(pane.getRight());
     }
 
