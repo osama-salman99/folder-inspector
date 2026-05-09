@@ -1,0 +1,182 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build installer (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            installer_type: deb
+            installer_glob: 'dist/*.deb'
+          - os: macos-latest
+            installer_type: dmg
+            installer_glob: 'dist/*.dmg'
+          - os: windows-latest
+            installer_type: msi
+            installer_glob: 'dist/*.msi'
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Resolve versions
+        id: ver
+        shell: bash
+        run: |
+          RAW="${GITHUB_REF_NAME#v}"
+          APP_VERSION="$(printf '%s' "$RAW" | sed -E 's/[-+].*$//')"
+          if ! printf '%s' "$APP_VERSION" | grep -Eq '^[0-9]+(\.[0-9]+){0,2}$'; then
+            echo "Derived app version '$APP_VERSION' is not a valid jpackage version (expected MAJOR[.MINOR[.PATCH]])." >&2
+            exit 1
+          fi
+          echo "raw=$RAW" >> "$GITHUB_OUTPUT"
+          echo "app_version=$APP_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build shaded jar
+        shell: bash
+        run: mvn -B clean package
+
+      - name: Stage shaded jar for jpackage
+        shell: bash
+        run: |
+          rm -rf staging dist
+          mkdir -p staging dist
+          SHADED_JAR="$(ls target/folder-inspector-*.jar | grep -v '^target/original-' | head -n 1)"
+          if [ -z "$SHADED_JAR" ]; then
+            echo "Could not locate shaded jar in target/." >&2
+            ls -la target >&2
+            exit 1
+          fi
+          cp "$SHADED_JAR" staging/
+          echo "MAIN_JAR=$(basename "$SHADED_JAR")" >> "$GITHUB_ENV"
+
+      - name: Build installer with jpackage
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXTRA_ARGS=()
+          case "${{ matrix.installer_type }}" in
+            msi)
+              EXTRA_ARGS+=(--win-dir-chooser --win-menu --win-shortcut)
+              ;;
+          esac
+          jpackage \
+            --type ${{ matrix.installer_type }} \
+            --name FolderInspector \
+            --app-version "${{ steps.ver.outputs.app_version }}" \
+            --vendor "osmosis" \
+            --input staging \
+            --main-jar "$MAIN_JAR" \
+            --main-class osmosis.folder.inspector.Main \
+            --dest dist \
+            "${EXTRA_ARGS[@]}"
+
+      - name: Rename installer to include full tag version
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          for f in ${{ matrix.installer_glob }}; do
+            ext="${f##*.}"
+            new="dist/FolderInspector-${{ steps.ver.outputs.raw }}.${ext}"
+            if [ "$f" != "$new" ]; then
+              mv "$f" "$new"
+            fi
+          done
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: installer-${{ matrix.os }}
+          path: ${{ matrix.installer_glob }}
+          if-no-files-found: error
+
+      - name: Upload shaded jar (ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: shaded-jar
+          path: target/folder-inspector-*.jar
+          if-no-files-found: error
+
+      - name: Build sources archive (ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          mkdir -p dist
+          git archive --format=zip HEAD -o "dist/folder-inspector-${{ steps.ver.outputs.raw }}-sources.zip"
+
+      - name: Upload sources archive (ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sources
+          path: dist/folder-inspector-*-sources.zip
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Flatten artifacts
+        shell: bash
+        run: |
+          mkdir -p release
+          find artifacts -type f \( -name '*.deb' -o -name '*.dmg' -o -name '*.msi' -o -name '*.jar' -o -name '*.zip' \) -exec cp {} release/ \;
+          ls -la release
+
+      - name: Extract release notes from CHANGELOG
+        id: notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          NOTES_FILE="release_notes.md"
+          if [ -f CHANGELOG.md ]; then
+            awk -v ver="$VERSION" '
+              BEGIN { capture = 0 }
+              /^## \[/ {
+                if (capture) { exit }
+                if (index($0, "[" ver "]") > 0) { capture = 1; next }
+              }
+              /^\[[^]]+\]:/ { if (capture) { exit } }
+              capture { print }
+            ' CHANGELOG.md > "$NOTES_FILE"
+          fi
+          if [ ! -s "$NOTES_FILE" ]; then
+            printf 'Release %s.\n\nSee CHANGELOG.md for details.\n' "$VERSION" > "$NOTES_FILE"
+          fi
+          echo "path=$NOTES_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Create draft GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          body_path: ${{ steps.notes.outputs.path }}
+          files: release/*
+          fail_on_unmatched_files: true
