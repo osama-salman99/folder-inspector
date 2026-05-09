@@ -12,6 +12,7 @@ import osmosis.folder.inspector.test.TestUtils;
 
 import java.io.File;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
@@ -46,12 +47,16 @@ class ContainerPaneTest {
     }
 
     @Test
-    public void firstPaneInSequenceHasAccentBackground() {
-        File file = TestUtils.getInstance().getFile("folder1/folder2/f2-file1.txt");
-        Container container = ContainerFactory.createContainer(file, null);
+    public void backgroundsAlternateAcrossPaneSequence() {
+        File file1 = TestUtils.getInstance().getFile("folder1/folder2/f2-file1.txt");
+        File file2 = TestUtils.getInstance().getFile("folder1/folder2/f2-file2.txt");
+        Container c1 = ContainerFactory.createContainer(file1, null);
+        Container c2 = ContainerFactory.createContainer(file2, null);
 
-        ContainerPane pane = new ContainerPane(container);
+        ContainerPane pane1 = new ContainerPane(c1);
+        ContainerPane pane2 = new ContainerPane(c2);
 
-        assertNotNull(pane.getBackground());
+        assertNotEquals(pane1.getBackground(), pane2.getBackground(),
+                "Consecutive panes should not share the same background");
     }
 }
