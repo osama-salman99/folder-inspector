@@ -19,6 +19,7 @@
         <org.openjfx-version>23</org.openjfx-version>
         <org.junit.jupiter-version>6.0.1</org.junit.jupiter-version>
         <org.mockito-version>5.14.2</org.mockito-version>
+        <org.testfx-version>4.0.16-alpha</org.testfx-version>
 
         <!-- Plugins Versions -->
         <maven-shade-plugin-version>3.6.1</maven-shade-plugin-version>
@@ -60,6 +61,18 @@
                 <version>${org.mockito-version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.testfx</groupId>
+                <artifactId>testfx-core</artifactId>
+                <version>${org.testfx-version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testfx</groupId>
+                <artifactId>testfx-junit5</artifactId>
+                <version>${org.testfx-version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -87,6 +100,16 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -96,6 +119,10 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin-version}</version>
+                    <configuration>
+                        <argLine>@{argLine}
+                            --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argLine>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -155,8 +182,10 @@
                         <excludes>
                             <exclude>osmosis/folder/inspector/Main.class</exclude>
                             <exclude>osmosis/folder/inspector/FolderInspector.class</exclude>
-                            <exclude>osmosis/folder/inspector/controllers/**</exclude>
-                            <exclude>osmosis/folder/inspector/panes/**</exclude>
+                            <exclude>osmosis/folder/inspector/controllers/Controller.class</exclude>
+                            <exclude>osmosis/folder/inspector/controllers/MainController.class</exclude>
+                            <exclude>osmosis/folder/inspector/controllers/FoldersController.class</exclude>
+                            <exclude>osmosis/folder/inspector/controllers/data/**</exclude>
                             <exclude>osmosis/folder/inspector/constants/providers/**</exclude>
                             <exclude>osmosis/folder/inspector/constants/Constant.class</exclude>
                             <exclude>osmosis/folder/inspector/exceptions/**</exclude>
