@@ -17,7 +17,7 @@
 
         <!-- Dependencies Versions -->
         <org.openjfx-version>23</org.openjfx-version>
-        <org.junit.jupiter-version>6.0.1</org.junit.jupiter-version>
+        <org.junit.jupiter-version>6.0.3</org.junit.jupiter-version>
         <org.mockito-version>5.14.2</org.mockito-version>
         <org.testfx-version>4.0.16-alpha</org.testfx-version>
 
