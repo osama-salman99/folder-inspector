@@ -33,6 +33,7 @@ import java.util.ResourceBundle;
 public class FoldersController extends Controller implements ChildContainerReadyListener {
     public VBox foldersVBox;
     public Button backButton;
+    public Button rootButton;
     public Text progressText;
     public TextField addressBar;
     public Text folderIsEmptyText;
@@ -74,6 +75,15 @@ public class FoldersController extends Controller implements ChildContainerReady
         confirmGoingToMainMenu(actionEvent);
     }
 
+    @FXML
+    public void goToRoot() {
+        DirectoryContainer container = containerManager.getCurrentContainer();
+        while (container.hasParentContainer()) {
+            container = container.getParent();
+        }
+        showContainer(container);
+    }
+
     private void initializeAddressBar() {
         addressBar.setText(containerManager.getCurrentContainer().getPath());
     }
@@ -81,6 +91,7 @@ public class FoldersController extends Controller implements ChildContainerReady
     private void installTooltips() {
         Tooltip.install(progressText, new Tooltip(UserMessages.ITEMS_CALCULATED));
         Tooltip.install(copyAddressToClipboard, new Tooltip(UserMessages.COPY_ADDRESS_TO_CLIPBOARD));
+        Tooltip.install(rootButton, new Tooltip(UserMessages.GO_TO_ROOT));
     }
 
     private void startSizeCalculation() {
