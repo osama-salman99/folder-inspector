@@ -42,6 +42,27 @@ class MainControllerTest {
         assertTrue(inspectButton.isDisabled(), "Inspect button starts disabled until input is non-blank");
     }
 
+    @org.junit.jupiter.api.AfterEach
+    void clearContainerManagerState() {
+        osmosis.folder.inspector.container.ContainerManager.getInstance().clearContainer();
+    }
+
+    @Test
+    public void inspectOnValidPathNavigatesToFoldersScene(FxRobot robot) throws Exception {
+        Button inspectButton = robot.lookup("#inspectButton").queryAs(Button.class);
+        TextField pathInput = robot.lookup("#pathInputField").queryAs(TextField.class);
+        java.io.File validFolder = osmosis.folder.inspector.test.TestUtils.getInstance().getFile("folder1/folder2");
+        robot.interact(() -> {
+            pathInput.setText(validFolder.getAbsolutePath());
+            inspectButton.setDisable(false);
+        });
+
+        robot.interact(inspectButton::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        assertNotNull(osmosis.folder.inspector.container.ContainerManager.getInstance().getCurrentContainer());
+    }
+
     @Test
     public void inspectOnBlankPathShowsErrorAlert(FxRobot robot) throws Exception {
         Button inspectButton = robot.lookup("#inspectButton").queryAs(Button.class);

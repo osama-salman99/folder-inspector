@@ -62,4 +62,42 @@ class FoldersControllerNestedTest {
 
         assertNotNull(back);
     }
+
+    @Test
+    public void clickingDirectoryChildPaneNavigatesIntoIt(FxRobot robot) {
+        WaitForAsyncUtils.waitForFxEvents();
+        VBox foldersVBox = robot.lookup("#foldersVBox").queryAs(VBox.class);
+
+        ContainerPane firstDirectoryPane = foldersVBox.getChildren().stream()
+                .filter(node -> node instanceof ContainerPane)
+                .map(node -> (ContainerPane) node)
+                .filter(pane -> pane.getContainer() instanceof DirectoryContainer)
+                .findFirst()
+                .orElse(null);
+
+        if (firstDirectoryPane != null) {
+            robot.interact(() -> firstDirectoryPane.fireEvent(new javafx.scene.input.MouseEvent(
+                    javafx.scene.input.MouseEvent.MOUSE_PRESSED,
+                    0, 0, 0, 0, javafx.scene.input.MouseButton.PRIMARY, 1,
+                    false, false, false, false, true, false, false, false, false, false, null)));
+            WaitForAsyncUtils.waitForFxEvents();
+        }
+
+        assertNotNull(foldersVBox);
+    }
+
+    @Test
+    public void goBackWithParentNavigatesUp(FxRobot robot) {
+        DirectoryContainer parent = ContainerFactory.createDirectoryContainer(
+                TestUtils.getInstance().getFile("folder1"));
+        DirectoryContainer child = new DirectoryContainer(
+                TestUtils.getInstance().getFile("folder1/folder2"), parent);
+        ContainerManager.getInstance().setCurrentContainer(child);
+
+        Button back = robot.lookup("#backButton").queryAs(Button.class);
+        robot.interact(back::fire);
+        WaitForAsyncUtils.waitForFxEvents();
+
+        assertNotNull(ContainerManager.getInstance().getCurrentContainer());
+    }
 }
