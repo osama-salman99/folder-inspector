@@ -1,9 +1,13 @@
 package osmosis.folder.inspector.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
@@ -11,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
+import org.testfx.util.WaitForAsyncUtils;
 import osmosis.folder.inspector.constants.ResourcePaths;
 
 import java.util.Objects;
@@ -35,6 +40,37 @@ class MainControllerTest {
         assertNotNull(pathInput);
         assertNotNull(inspectButton);
         assertTrue(inspectButton.isDisabled(), "Inspect button starts disabled until input is non-blank");
+    }
+
+    @Test
+    public void inspectOnBlankPathShowsErrorAlert(FxRobot robot) throws Exception {
+        Button inspectButton = robot.lookup("#inspectButton").queryAs(Button.class);
+        TextField pathInput = robot.lookup("#pathInputField").queryAs(TextField.class);
+        robot.interact(() -> {
+            pathInput.setText("");
+            inspectButton.setDisable(false);
+        });
+
+        Thread fire = new Thread(() -> javafx.application.Platform.runLater(() -> inspectButton.fire()));
+        fire.start();
+
+        WaitForAsyncUtils.waitFor(3, java.util.concurrent.TimeUnit.SECONDS, () ->
+                robot.listTargetWindows().stream().anyMatch(w -> w instanceof Stage stage
+                        && stage.getScene() != null
+                        && stage.getScene().getRoot() instanceof DialogPane));
+
+        robot.interact(() -> {
+            DialogPane dialogPane = (DialogPane) robot.listTargetWindows().stream()
+                    .map(w -> ((Stage) w).getScene().getRoot())
+                    .filter(r -> r instanceof DialogPane)
+                    .findFirst().orElseThrow();
+            Button ok = (Button) dialogPane.lookupButton(
+                    dialogPane.getButtonTypes().stream().findFirst().orElse(ButtonType.OK));
+            ok.fire();
+        });
+        WaitForAsyncUtils.waitForFxEvents();
+
+        assertNotNull(pathInput);
     }
 
     @Test
