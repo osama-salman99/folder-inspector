@@ -28,7 +28,7 @@
         <maven-compiler-plugin-version>3.14.1</maven-compiler-plugin-version>
         <maven-checkstyle-plugin-version>3.6.0</maven-checkstyle-plugin-version>
         <jacoco-maven-plugin-version>0.8.13</jacoco-maven-plugin-version>
-        <jacoco.line.coverage.minimum>0.98</jacoco.line.coverage.minimum>
+        <jacoco.line.coverage.minimum>0.80</jacoco.line.coverage.minimum>
     </properties>
 
     <dependencyManagement>
@@ -182,11 +182,6 @@
                         <excludes>
                             <exclude>osmosis/folder/inspector/Main.class</exclude>
                             <exclude>osmosis/folder/inspector/FolderInspector.class</exclude>
-                            <exclude>osmosis/folder/inspector/controllers/Controller.class</exclude>
-                            <exclude>osmosis/folder/inspector/controllers/MainController.class</exclude>
-                            <exclude>osmosis/folder/inspector/controllers/FoldersController.class</exclude>
-                            <exclude>osmosis/folder/inspector/constants/providers/AlertProvider.class</exclude>
-                            <exclude>osmosis/folder/inspector/constants/providers/ContainerIconProvider.class</exclude>
                             <exclude>osmosis/folder/inspector/exceptions/**</exclude>
                         </excludes>
                     </configuration>

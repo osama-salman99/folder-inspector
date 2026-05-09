@@ -42,9 +42,13 @@ class MainControllerTest {
         TextField pathInput = robot.lookup("#pathInputField").queryAs(TextField.class);
         Button inspectButton = robot.lookup("#inspectButton").queryAs(Button.class);
 
-        robot.clickOn(pathInput).write("/some/path");
         robot.interact(() -> {
+            pathInput.setText("/some/path");
+            pathInput.fireEvent(new javafx.scene.input.KeyEvent(
+                    javafx.scene.input.KeyEvent.KEY_TYPED, "x", "x",
+                    javafx.scene.input.KeyCode.X, false, false, false, false));
         });
+        org.testfx.util.WaitForAsyncUtils.waitForFxEvents();
 
         assertTrue(!inspectButton.isDisabled(), "Inspect button enables when text is non-blank");
     }
