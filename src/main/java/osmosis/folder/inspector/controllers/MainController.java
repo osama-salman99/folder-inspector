@@ -8,8 +8,6 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
-import osmosis.folder.inspector.constants.Constant;
-import osmosis.folder.inspector.constants.ErrorMessages;
 import osmosis.folder.inspector.constants.ResourcePaths;
 import osmosis.folder.inspector.container.ContainerFactory;
 import osmosis.folder.inspector.exceptions.InvalidDirectoryException;
@@ -45,20 +43,12 @@ public class MainController extends Controller {
         mainBox.setDisable(true);
         File file;
         try {
-            file = getFile();
+            file = PathInputResolver.resolveDirectory(pathInputField.getText());
         } catch (InvalidDirectoryException exception) {
             showAlert(exception.getMessage());
             return;
         }
         goToFolderView(actionEvent, file);
-    }
-
-    private File getFile() throws InvalidDirectoryException {
-        String path = getPath();
-        validatePath(path);
-        File file = new File(path);
-        validateFile(file);
-        return file;
     }
 
     private void showAlert(String message) {
@@ -73,29 +63,6 @@ public class MainController extends Controller {
         mainBox.setDisable(false);
         hideProgressIndicator();
         setScene(actionEvent, ResourcePaths.FOLDERS_FXML);
-    }
-
-    private String getPath() {
-        String path = pathInputField.getText();
-        if (path.endsWith(Constant.COLON)) {
-            path += Constant.FILE_SEPARATOR;
-        }
-        return path;
-    }
-
-    private void validatePath(String path) throws InvalidDirectoryException {
-        if (path.isBlank()) {
-            throw new InvalidDirectoryException(ErrorMessages.PATH_CANNOT_BE_EMPTY);
-        }
-    }
-
-    private void validateFile(File file) throws InvalidDirectoryException {
-        if (!file.exists()) {
-            throw new InvalidDirectoryException(ErrorMessages.DIRECTORY_DOES_NOT_EXIST);
-        }
-        if (!file.isDirectory()) {
-            throw new InvalidDirectoryException(ErrorMessages.PATH_DOES_NOT_POINT_TO_A_DIRECTORY);
-        }
     }
 
     private void showProgressIndicator() {

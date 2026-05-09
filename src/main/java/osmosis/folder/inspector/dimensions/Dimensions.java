@@ -39,11 +39,15 @@ public class Dimensions {
 
     public static Dimensions calculate() {
         Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+        return calculate(bounds.getWidth(), bounds.getHeight());
+    }
+
+    public static Dimensions calculate(double screenWidth, double screenHeight) {
         return new Builder()
-                .prefWidth(bounds.getWidth() * PREF_WIDTH_RATIO)
-                .prefHeight(bounds.getHeight() * PREF_HEIGHT_RATIO)
-                .minWidth(bounds.getWidth() * MIN_WIDTH_RATIO)
-                .minHeight(bounds.getHeight() * MIN_HEIGHT_RATIO)
+                .prefWidth(screenWidth * PREF_WIDTH_RATIO)
+                .prefHeight(screenHeight * PREF_HEIGHT_RATIO)
+                .minWidth(screenWidth * MIN_WIDTH_RATIO)
+                .minHeight(screenHeight * MIN_HEIGHT_RATIO)
                 .build();
     }
 
