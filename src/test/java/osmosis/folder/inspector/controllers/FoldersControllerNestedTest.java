@@ -35,9 +35,7 @@ class FoldersControllerNestedTest {
 
     @Start
     private void start(Stage stage) throws Exception {
-        DirectoryContainer container = ContainerFactory.createDirectoryContainer(
-                TestUtils.getInstance().getFile("folder1"));
-        ContainerManager.getInstance().setCurrentContainer(container);
+        ContainerManager.getInstance().setRootContainer(TestUtils.getInstance().getFile("folder1"));
 
         Parent root = FXMLLoader.load(Objects.requireNonNull(
                 getClass().getResource("/osmosis/folder/inspector/" + ResourcePaths.FOLDERS_FXML)));
@@ -88,11 +86,11 @@ class FoldersControllerNestedTest {
 
     @Test
     public void goBackWithParentNavigatesUp(FxRobot robot) {
-        DirectoryContainer parent = ContainerFactory.createDirectoryContainer(
-                TestUtils.getInstance().getFile("folder1"));
+        ContainerManager.getInstance().setRootContainer(TestUtils.getInstance().getFile("folder1"));
+        DirectoryContainer parent = ContainerManager.getInstance().getCurrentContainer();
         DirectoryContainer child = new DirectoryContainer(
                 TestUtils.getInstance().getFile("folder1/folder2"), parent);
-        ContainerManager.getInstance().setCurrentContainer(child);
+        ContainerManager.getInstance().navigateTo(child, () -> { });
 
         Button back = robot.lookup("#backButton").queryAs(Button.class);
         robot.interact(back::fire);

@@ -21,8 +21,7 @@ public class DirectorySizeCalculationTask extends RecursiveTask<Long> {
         long directoriesSizes = calculateDirectoriesSizes(childrenContainers);
         long filesSizes = calculateFilesSizes(childrenContainers);
         long size = directoriesSizes + filesSizes;
-        directoryContainer.setSize(size);
-        directoryContainer.invokeListener();
+        directoryContainer.completeWithSize(size);
         return size;
     }
 
