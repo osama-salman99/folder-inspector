@@ -22,7 +22,7 @@
         <org.testfx-version>4.0.16-alpha</org.testfx-version>
 
         <!-- Plugins Versions -->
-        <maven-shade-plugin-version>3.6.1</maven-shade-plugin-version>
+        <maven-shade-plugin-version>3.6.2</maven-shade-plugin-version>
         <javafx-maven-plugin-version>0.0.8</javafx-maven-plugin-version>
         <maven-surefire-plugin-version>3.5.4</maven-surefire-plugin-version>
         <maven-compiler-plugin-version>3.15.0</maven-compiler-plugin-version>
