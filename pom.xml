@@ -19,7 +19,7 @@
         <org.openjfx-version>25.0.2</org.openjfx-version>
         <org.junit.jupiter-version>6.0.3</org.junit.jupiter-version>
         <org.mockito-version>5.18.0</org.mockito-version>
-        <org.testfx-version>4.0.16-alpha</org.testfx-version>
+        <org.testfx-version>4.0.18</org.testfx-version>
 
         <!-- Plugins Versions -->
         <maven-shade-plugin-version>3.6.1</maven-shade-plugin-version>
