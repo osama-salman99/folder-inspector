@@ -16,7 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependencies Versions -->
-        <org.openjfx-version>25.0.2</org.openjfx-version>
+        <org.openjfx-version>26.0.1</org.openjfx-version>
         <org.junit.jupiter-version>6.0.3</org.junit.jupiter-version>
         <org.mockito-version>5.18.0</org.mockito-version>
         <org.testfx-version>4.0.16-alpha</org.testfx-version>
